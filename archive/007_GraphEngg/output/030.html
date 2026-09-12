@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>The Graph Engineering Manifesto - MDRender Docs</title>
+  <link rel="stylesheet" href="./assets/style.css">
+  <!-- Anti-FOUC theme pre-hydration -->
+  <script>
+    (function() {
+      const theme = localStorage.getItem('mdrender-theme') || 'github';
+      const savedMode = localStorage.getItem('mdrender-mode') || 'auto';
+      const mode = savedMode === 'auto'
+        ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light')
+        : savedMode;
+      document.documentElement.setAttribute('data-theme', theme);
+      document.documentElement.setAttribute('data-mode', mode);
+    })();
+  </script>
+</head>
+<body>
+  <div class="app-container">
+    <header class="top-header">
+      <div class="header-left">
+        <button class="mobile-nav-toggle" type="button" aria-label="Toggle navigation">☰</button>
+        <a class="site-title" href="index.html">
+          <span>📖</span>
+          <span>MDRender Docs</span>
+        </a>
+      </div>
+      <div class="header-right">
+        <select id="theme-select" class="control-select" aria-label="Select Theme">
+          <option value="github">GitHub</option>
+          <option value="dracula">Dracula</option>
+          <option value="nord">Nord</option>
+          <option value="solarized">Solarized</option>
+          <option value="sepia">Sepia</option>
+        </select>
+        <button id="mode-toggle" class="control-btn mode-toggle-btn" type="button" aria-label="Toggle dark/light mode">
+          💻 Auto
+        </button>
+      </div>
+    </header>
+
+    <div class="layout-body">
+      <div class="sidebar-backdrop"></div>
+      <aside class="sidebar">
+        <div class="sidebar-search">
+          <input type="text" class="search-input" placeholder="Search pages..." aria-label="Filter navigation">
+        </div>
+  <div class="nav-section-title">General</div>
+  <ul class="nav-list">
+    <li class="nav-item"><a class="nav-link" href="index.html">Overview</a></li>
+    <li class="nav-item"><a class="nav-link" href="020.html">020</a></li>
+    <li class="nav-item"><a class="nav-link" href="021.html">021</a></li>
+    <li class="nav-item"><a class="nav-link" href="022.html">022</a></li>
+    <li class="nav-item"><a class="nav-link" href="023.html">023</a></li>
+    <li class="nav-item"><a class="nav-link" href="024.html">024</a></li>
+    <li class="nav-item"><a class="nav-link" href="025.html">025</a></li>
+    <li class="nav-item"><a class="nav-link" href="026.html">026</a></li>
+    <li class="nav-item"><a class="nav-link" href="027.html">027</a></li>
+    <li class="nav-item"><a class="nav-link" href="028.html">028</a></li>
+    <li class="nav-item"><a class="nav-link" href="029.html">029</a></li>
+    <li class="nav-item"><a class="nav-link active" href="#">030</a></li>
+    <li class="nav-item"><a class="nav-link" href="031.html">031</a></li>
+    <li class="nav-item"><a class="nav-link" href="032.html">032</a></li>
+    <li class="nav-item"><a class="nav-link" href="033.html">033</a></li>
+    <li class="nav-item"><a class="nav-link" href="034.html">034</a></li>
+    <li class="nav-item"><a class="nav-link" href="035.html">035</a></li>
+    <li class="nav-item"><a class="nav-link" href="036.html">036</a></li>
+    <li class="nav-item"><a class="nav-link" href="037.html">037</a></li>
+    <li class="nav-item"><a class="nav-link" href="038.html">038</a></li>
+    <li class="nav-item"><a class="nav-link" href="039.html">039</a></li>
+    <li class="nav-item"><a class="nav-link" href="040.html">040</a></li>
+  </ul>
+
+      </aside>
+
+      <main class="content-area">
+        <article>
+<h2 id="request">Request<a href="#request" class="header-anchor" aria-label="Link to section">#</a></h2>
+<p>now create the detailed blog for ###  9. Decisions are Nodes: Making AI Reasoning Legally Auditable</p>
+<h2 id="response">Response<a href="#response" class="header-anchor" aria-label="Link to section">#</a></h2><h1 id="the-graph-engineering-manifesto">The Graph Engineering Manifesto<a href="#the-graph-engineering-manifesto" class="header-anchor" aria-label="Link to section">#</a></h1><h2 id="part-9-decisions-are-nodes-making-ai-reasoning-legally-auditable">Part 9: Decisions are Nodes: Making AI Reasoning Legally Auditable<a href="#part-9-decisions-are-nodes-making-ai-reasoning-legally-auditable" class="header-anchor" aria-label="Link to section">#</a></h2>
+<p>In [Part 8], we finalized the defenses of our Knowledge Graph. With Ontology, Provenance, Identity, and Fusion gates in place, we can guarantee that every piece of data inside <code>ortho-knowledge-graph</code> is structurally sound, conflict-free, and cryptographically linked to a trusted source document.</p>
+<p>We have successfully modeled the <em>reality</em> of the enterprise. But in 2026, storing data isn't enough. We must also store the <em>reasoning</em> applied to that data.</p>
+<h3 id="the-ephemeral-thought-problem">The Ephemeral Thought Problem<a href="#the-ephemeral-thought-problem" class="header-anchor" aria-label="Link to section">#</a></h3>
+<p>When an autonomous agent performs a complex task—like reviewing a patient's medical history to determine clinical trial eligibility—it relies on Chain-of-Thought reasoning. It pulls in facts, weighs them against constraints, and reaches a conclusion.</p>
+<p>In early agent frameworks, this brilliant logical deduction lived entirely inside the LLM's context window. When the agent finished its task and shut down, that context window vanished into the ether. The only thing left was the final output (e.g., an updated database row saying <code>Eligible: False</code>).</p>
+<p>If an auditor, a regulator, or a human doctor later asks, <em>"Why was this patient rejected?"</em> the answer is gone. The context is destroyed. The engineers can only point to the final output and say, <em>"The AI decided."</em></p>
+<p>This is the ultimate failure of AI governance. If you cannot produce the exact logical chain that led to a decision, you cannot deploy AI in a regulated environment.</p>
+<h3 id="decision-intelligence-turning-logic-into-topology">Decision Intelligence: Turning Logic into Topology<a href="#decision-intelligence-turning-logic-into-topology" class="header-anchor" aria-label="Link to section">#</a></h3>
+<p>In Graph Engineering, we solve this by promoting an agent's reasoning from ephemeral text to durable, topological mathematics. We call this <strong>Decision Intelligence</strong>.</p>
+<p>In Orthograph OS, a decision is not a log entry. It is a first-class node in the Knowledge Graph.</p>
+<p>When the Executor agent finishes analyzing a patient, it does not just update the <code>ledger.md</code>. It is required to call a specific MCP tool: <code>record_decision</code>.</p>
+<div class="code-block-wrapper">
+  <div class="code-block-header">
+    <span class="code-lang">json</span>
+    <button class="copy-btn" type="button" aria-label="Copy code">Copy</button>
+  </div>
+<pre><code class="language-json">// The Executor's MCP Tool Call
+{
+  "tool": "record_decision",
+  "arguments": {
+    "agent_id": "executor-haiku-v4",
+    "conclusion": "Patient p-001 is ineligible for Trial Arm A due to a reported severe cardiac arrhythmia.",
+    "supporting_fact_ids": ["fact-18b44093", "fact-41ffd800"]
+  }
+}
+</code></pre>
+</div>
+<p>This tool call instructs the Python kernel to create a brand new node of type <code>AgentDecision</code> and establish hard, directed edges to the specific facts the agent cited.</p>
+<h3 id="the-dangling-reference-gate">The &quot;Dangling Reference&quot; Gate<a href="#the-dangling-reference-gate" class="header-anchor" aria-label="Link to section">#</a></h3>
+<p>However, we know from our Constitution that we cannot trust the LLM. What if the agent hallucinated a <code>fact_id</code> that doesn't exist? What if it tries to justify its decision using data it just made up?</p>
+<p>The Orthograph kernel enforces strict referential integrity.</p>
+<div class="code-block-wrapper">
+  <div class="code-block-header">
+    <span class="code-lang">python</span>
+    <button class="copy-btn" type="button" aria-label="Copy code">Copy</button>
+  </div>
+<pre><code class="language-python"># packages/ortho-knowledge-graph/src/ortho_knowledge_graph/store/client.py
+def record_decision(self, agent_id: str, conclusion: str, supporting_fact_ids: list) -&gt; dict:
+    
+    # The Dangling Reference Gate
+    unknown = [f for f in supporting_fact_ids if not self._fact_exists(f)]
+    if unknown:
+        return {
+            "status": "rejected",
+            "ok": False,
+            "code": "DANGLING_FACT_REF",
+            "reason": f"decision cites fact id(s) that do not exist in the graph: {unknown}",
+        }
+        
+    # ... proceed to generate the Decision Node and cryptographic hash ...
+</code></pre>
+</div>
+<p>If the agent cites a non-existent fact, the kernel violently rejects the transaction with a <code>DANGLING_FACT_REF</code> error. The decision is not saved. The agent is forced to try again, this time citing real, provenance-backed data.</p>
+<h3 id="the-cryptographic-audit-trail">The Cryptographic Audit Trail<a href="#the-cryptographic-audit-trail" class="header-anchor" aria-label="Link to section">#</a></h3>
+<p>Once the decision passes the gate, the kernel doesn't just save the node; it mathematically seals it.</p>
+<p>It generates a <code>decision_hash</code>—a SHA-256 fingerprint that binds the agent ID, the exact text of the conclusion, the timestamp, and the sorted list of <code>supporting_fact_ids</code>.</p>
+<div class="code-block-wrapper">
+  <div class="code-block-header">
+    <span class="code-lang">python</span>
+    <button class="copy-btn" type="button" aria-label="Copy code">Copy</button>
+  </div>
+<pre><code class="language-python">decision_hash = compute_decision_hash(
+    agent_id, conclusion, supporting_fact_ids, timestamp
+)
+</code></pre>
+</div>
+<p>Because the cited facts <em>also</em> have cryptographic hashes (<code>fact_hash</code>) linking them to their source documents via PROV-O, we have created an unbroken, immutable chain of accountability.</p>
+<h3 id="the-trace-decision-chain-query">The trace_decision_chain Query<a href="#the-trace-decision-chain-query" class="header-anchor" aria-label="Link to section">#</a></h3>
+<p>This architecture enables the ultimate compliance tool.</p>
+<p>If a regulator challenges a decision six months later, you do not need to guess what the AI was thinking. You use the <code>trace_decision_chain(decision_id)</code> API.</p>
+<p>This function traverses the graph backward:</p>
+<ol>
+<li><strong>The Decision Node:</strong> It shows the exact conclusion ("Patient ineligible...") and the cryptographic signature of the agent model that made it.</li>
+<li><strong>The Facts:</strong> It follows the edges to the specific <code>Fact</code> nodes (e.g., <code>Patient -&gt; REPORTED_EVENT -&gt; Arrhythmia</code>).</li>
+<li><strong>The Extraction:</strong> It follows the PROV-O lineage to the exact millisecond the fact was extracted from raw text.</li>
+<li><strong>The Source Document:</strong> It follows the lineage to the specific chunk of <code>trial_data_v2.csv</code> that contained the original data.</li>
+</ol>
+<p>You have a complete, machine-auditable, cryptographically secure proof of reasoning, from the raw data all the way to the final conclusion.</p>
+<h3 id="conclusion">Conclusion<a href="#conclusion" class="header-anchor" aria-label="Link to section">#</a></h3>
+<p>By treating decisions as first-class nodes, Orthograph OS transforms AI from a black-box liability into a transparent, queryable asset.</p>
+<p>We have now completely defined the two halves of Graph Engineering: The <strong>Task Graph</strong> (which ensures agents execute work deterministically) and the <strong>Knowledge Graph</strong> (which ensures agents remember and reason accountably).</p>
+<p>But these two halves are written in different languages. The Task Graph is a lightweight, stateless TypeScript orchestrator. The Knowledge Graph is a heavy, data-science-driven Python backend. How do they communicate securely and efficiently?</p>
+<p>In <strong>Part 10: The Model Context Protocol (MCP) as the Ultimate Boundary</strong>, we will explore the architectural "glue" that binds Orthograph OS together, and why standardizing tool calls is the secret to scaling enterprise AI.</p>
+
+        </article>
+        <footer class="page-footer">
+          <span>Generated with <strong>MDRender</strong></span>
+          <a href="#top" class="back-to-top">↑ Back to top</a>
+        </footer>
+      </main>
+
+<aside class="toc-sidebar">
+  <div class="toc-title">On this page</div>
+  <ul class="toc-list">
+    <li class="toc-item depth-2"><a class="toc-link" href="#request">Request</a></li>
+    <li class="toc-item depth-2"><a class="toc-link" href="#response">Response</a></li>
+    <li class="toc-item depth-2"><a class="toc-link" href="#part-9-decisions-are-nodes-making-ai-reasoning-legally-auditable">Part 9: Decisions are Nodes: Making AI Reasoning Legally Auditable</a></li>
+    <li class="toc-item depth-3"><a class="toc-link" href="#the-ephemeral-thought-problem">The Ephemeral Thought Problem</a></li>
+    <li class="toc-item depth-3"><a class="toc-link" href="#decision-intelligence-turning-logic-into-topology">Decision Intelligence: Turning Logic into Topology</a></li>
+    <li class="toc-item depth-3"><a class="toc-link" href="#the-dangling-reference-gate">The &quot;Dangling Reference&quot; Gate</a></li>
+    <li class="toc-item depth-3"><a class="toc-link" href="#the-cryptographic-audit-trail">The Cryptographic Audit Trail</a></li>
+    <li class="toc-item depth-3"><a class="toc-link" href="#the-trace-decision-chain-query">The trace_decision_chain Query</a></li>
+    <li class="toc-item depth-3"><a class="toc-link" href="#conclusion">Conclusion</a></li>
+  </ul>
+</aside>
+
+    </div>
+  </div>
+
+  <script src="./assets/theme.js"></script>
+</body>
+</html>

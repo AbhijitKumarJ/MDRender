@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Getting Started Guide - MDRender Docs</title>
+  <meta name="description" content="How to use MDRender CLI flags, options, and workflows">
+<link rel="stylesheet" href="../assets/style.css">
+  <!-- Anti-FOUC theme pre-hydration -->
+  <script>
+    (function() {
+      const theme = localStorage.getItem('mdrender-theme') || 'github';
+      const savedMode = localStorage.getItem('mdrender-mode') || 'auto';
+      const mode = savedMode === 'auto'
+        ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light')
+        : savedMode;
+      document.documentElement.setAttribute('data-theme', theme);
+      document.documentElement.setAttribute('data-mode', mode);
+    })();
+  </script>
+</head>
+<body>
+  <div class="app-container">
+    <header class="top-header">
+      <div class="header-left">
+        <button class="mobile-nav-toggle" type="button" aria-label="Toggle navigation">☰</button>
+        <a class="site-title" href="../index.html">
+          <span>📖</span>
+          <span>MDRender Docs</span>
+        </a>
+      </div>
+      <div class="header-right">
+        <select id="theme-select" class="control-select" aria-label="Select Theme">
+          <option value="github">GitHub</option>
+          <option value="dracula">Dracula</option>
+          <option value="nord">Nord</option>
+          <option value="solarized">Solarized</option>
+          <option value="sepia">Sepia</option>
+        </select>
+        <button id="mode-toggle" class="control-btn mode-toggle-btn" type="button" aria-label="Toggle dark/light mode">
+          💻 Auto
+        </button>
+      </div>
+    </header>
+
+    <div class="layout-body">
+      <div class="sidebar-backdrop"></div>
+      <aside class="sidebar">
+        <div class="sidebar-search">
+          <input type="text" class="search-input" placeholder="Search pages..." aria-label="Filter navigation">
+        </div>
+  <div class="nav-section-title">General</div>
+  <ul class="nav-list">
+    <li class="nav-item"><a class="nav-link" href="../index.html">MDRender - Modern Markdown Documentation</a></li>
+  </ul>
+  <div class="nav-section-title">Guide</div>
+  <ul class="nav-list">
+    <li class="nav-item"><a class="nav-link active" href="#">Getting Started Guide</a></li>
+    <li class="nav-item"><a class="nav-link" href="theming.html">Themes and Modes</a></li>
+  </ul>
+
+      </aside>
+
+      <main class="content-area">
+<div class="metadata-box">
+  <div class="metadata-item"><span class="metadata-label">Date:</span> <span>2026-09-09</span></div>
+  <div class="metadata-item"><span class="metadata-label">Author:</span> <span>MDRender Team</span></div>
+  <div class="metadata-item"><span class="metadata-label">Tags:</span> <span><code>guide</code> <code>cli</code> <code>usage</code></span></div>
+</div>
+        <article>
+<h1 id="getting-started-guide">Getting Started Guide<a href="#getting-started-guide" class="header-anchor" aria-label="Link to section">#</a></h1>
+<p>This guide explains how to convert your Markdown files into a complete HTML documentation site.</p>
+<h2 id="installation-build">Installation &amp; Build<a href="#installation-build" class="header-anchor" aria-label="Link to section">#</a></h2>
+<p>Build the MDRender CLI tool with Cargo:</p>
+<div class="code-block-wrapper">
+  <div class="code-block-header">
+    <span class="code-lang">bash</span>
+    <button class="copy-btn" type="button" aria-label="Copy code">Copy</button>
+  </div>
+<pre><code class="language-bash">cargo build --release
+</code></pre>
+</div>
+<p>The resulting binary is located at <code>target/release/mdrender</code>.</p>
+<hr />
+<h2 id="command-line-usage">Command Line Usage<a href="#command-line-usage" class="header-anchor" aria-label="Link to section">#</a></h2>
+<p>Run MDRender with default directories (<code>input/</code> -&gt; <code>output/</code>):</p>
+<div class="code-block-wrapper">
+  <div class="code-block-header">
+    <span class="code-lang">bash</span>
+    <button class="copy-btn" type="button" aria-label="Copy code">Copy</button>
+  </div>
+<pre><code class="language-bash">./target/release/mdrender
+</code></pre>
+</div>
+<h3 id="custom-input-and-output-folders">Custom Input and Output Folders<a href="#custom-input-and-output-folders" class="header-anchor" aria-label="Link to section">#</a></h3>
+<p>Specify custom folders using <code>-i</code> / <code>--input</code> and <code>-o</code> / <code>--output</code>:</p>
+<div class="code-block-wrapper">
+  <div class="code-block-header">
+    <span class="code-lang">bash</span>
+    <button class="copy-btn" type="button" aria-label="Copy code">Copy</button>
+  </div>
+<pre><code class="language-bash">mdrender --input ./my-docs --output ./public --title "Project Wiki"
+</code></pre>
+</div>
+<h3 id="clean-output-before-build">Clean Output Before Build<a href="#clean-output-before-build" class="header-anchor" aria-label="Link to section">#</a></h3>
+<p>To ensure no orphaned files remain from deleted markdowns:</p>
+<div class="code-block-wrapper">
+  <div class="code-block-header">
+    <span class="code-lang">bash</span>
+    <button class="copy-btn" type="button" aria-label="Copy code">Copy</button>
+  </div>
+<pre><code class="language-bash">mdrender --clean
+</code></pre>
+</div>
+<h3 id="live-rebuilding-watch-mode">Live Rebuilding (Watch Mode)<a href="#live-rebuilding-watch-mode" class="header-anchor" aria-label="Link to section">#</a></h3>
+<p>To automatically rebuild whenever markdown files change:</p>
+<div class="code-block-wrapper">
+  <div class="code-block-header">
+    <span class="code-lang">bash</span>
+    <button class="copy-btn" type="button" aria-label="Copy code">Copy</button>
+  </div>
+<pre><code class="language-bash">mdrender --watch
+</code></pre>
+</div>
+<hr />
+<h2 id="callout-alerts">Callout Alerts<a href="#callout-alerts" class="header-anchor" aria-label="Link to section">#</a></h2>
+<p>MDRender recognizes standard GitHub alert blocks:</p>
+<div class="callout callout-tip">
+  <div class="callout-title"><span>💡</span> Tip</div>
+  <p>You can mix markdown formatting like <strong>bold text</strong>, <code>code</code>, and <a href="getting-started.html">links</a> inside callout boxes!</p>
+</div>
+<div class="callout callout-warning">
+  <div class="callout-title"><span>⚠️</span> Warning</div>
+  <p>Ensure all relative links inside markdown point to <code>.html</code> destinations or match the rendered structure.</p>
+</div>
+<div class="callout callout-caution">
+  <div class="callout-title"><span>🛑</span> Caution</div>
+  <p>Always run <code>--clean</code> if you rename files to avoid stale output.</p>
+</div>
+
+        </article>
+        <footer class="page-footer">
+          <span>Generated with <strong>MDRender</strong></span>
+          <a href="#top" class="back-to-top">↑ Back to top</a>
+        </footer>
+      </main>
+
+<aside class="toc-sidebar">
+  <div class="toc-title">On this page</div>
+  <ul class="toc-list">
+    <li class="toc-item depth-2"><a class="toc-link" href="#installation-build">Installation &amp; Build</a></li>
+    <li class="toc-item depth-2"><a class="toc-link" href="#command-line-usage">Command Line Usage</a></li>
+    <li class="toc-item depth-3"><a class="toc-link" href="#custom-input-and-output-folders">Custom Input and Output Folders</a></li>
+    <li class="toc-item depth-3"><a class="toc-link" href="#clean-output-before-build">Clean Output Before Build</a></li>
+    <li class="toc-item depth-3"><a class="toc-link" href="#live-rebuilding-watch-mode">Live Rebuilding (Watch Mode)</a></li>
+    <li class="toc-item depth-2"><a class="toc-link" href="#callout-alerts">Callout Alerts</a></li>
+  </ul>
+</aside>
+
+    </div>
+  </div>
+
+  <script src="../assets/theme.js"></script>
+</body>
+</html>

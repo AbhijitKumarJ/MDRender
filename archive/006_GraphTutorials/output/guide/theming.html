@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Themes and Modes - MDRender Docs</title>
+  <meta name="description" content="Details on available color themes and styling customization">
+<link rel="stylesheet" href="../assets/style.css">
+  <!-- Anti-FOUC theme pre-hydration -->
+  <script>
+    (function() {
+      const theme = localStorage.getItem('mdrender-theme') || 'github';
+      const savedMode = localStorage.getItem('mdrender-mode') || 'auto';
+      const mode = savedMode === 'auto'
+        ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light')
+        : savedMode;
+      document.documentElement.setAttribute('data-theme', theme);
+      document.documentElement.setAttribute('data-mode', mode);
+    })();
+  </script>
+</head>
+<body>
+  <div class="app-container">
+    <header class="top-header">
+      <div class="header-left">
+        <button class="mobile-nav-toggle" type="button" aria-label="Toggle navigation">☰</button>
+        <a class="site-title" href="../index.html">
+          <span>📖</span>
+          <span>MDRender Docs</span>
+        </a>
+      </div>
+      <div class="header-right">
+        <select id="theme-select" class="control-select" aria-label="Select Theme">
+          <option value="github">GitHub</option>
+          <option value="dracula">Dracula</option>
+          <option value="nord">Nord</option>
+          <option value="solarized">Solarized</option>
+          <option value="sepia">Sepia</option>
+        </select>
+        <button id="mode-toggle" class="control-btn mode-toggle-btn" type="button" aria-label="Toggle dark/light mode">
+          💻 Auto
+        </button>
+      </div>
+    </header>
+
+    <div class="layout-body">
+      <div class="sidebar-backdrop"></div>
+      <aside class="sidebar">
+        <div class="sidebar-search">
+          <input type="text" class="search-input" placeholder="Search pages..." aria-label="Filter navigation">
+        </div>
+  <div class="nav-section-title">General</div>
+  <ul class="nav-list">
+    <li class="nav-item"><a class="nav-link" href="../index.html">MDRender - Modern Markdown Documentation</a></li>
+  </ul>
+  <div class="nav-section-title">Guide</div>
+  <ul class="nav-list">
+    <li class="nav-item"><a class="nav-link" href="getting-started.html">Getting Started Guide</a></li>
+    <li class="nav-item"><a class="nav-link active" href="#">Themes and Modes</a></li>
+  </ul>
+
+      </aside>
+
+      <main class="content-area">
+<div class="metadata-box">
+  <div class="metadata-item"><span class="metadata-label">Date:</span> <span>2026-09-09</span></div>
+  <div class="metadata-item"><span class="metadata-label">Author:</span> <span>MDRender Team</span></div>
+  <div class="metadata-item"><span class="metadata-label">Tags:</span> <span><code>theming</code> <code>css</code> <code>darkmode</code></span></div>
+</div>
+        <article>
+<h1 id="themes-customization">Themes &amp; Customization<a href="#themes-customization" class="header-anchor" aria-label="Link to section">#</a></h1>
+<p>MDRender comes bundled with 5 beautifully designed themes, each supporting both Light and Dark modes.</p>
+<h2 id="available-themes">Available Themes<a href="#available-themes" class="header-anchor" aria-label="Link to section">#</a></h2>
+<ol>
+<li><strong>GitHub</strong>
+<ul>
+<li>Clean, modern, high-contrast palette inspired by GitHub's Primer design system.</li>
+</ul>
+</li>
+<li><strong>Dracula</strong>
+<ul>
+<li>Iconic dark theme with rich purples, pinks, and cyans.</li>
+</ul>
+</li>
+<li><strong>Nord</strong>
+<ul>
+<li>Elegant arctic blue-gray palette designed for eye comfort.</li>
+</ul>
+</li>
+<li><strong>Solarized</strong>
+<ul>
+<li>Ethan Schoonover's scientifically crafted color palette (Light &amp; Dark).</li>
+</ul>
+</li>
+<li><strong>Sepia / Paper</strong>
+<ul>
+<li>Warm, low-contrast reader theme ideal for prolonged long-form reading.</li>
+</ul>
+</li>
+</ol>
+<h2 id="shared-assets-architecture">Shared Assets Architecture<a href="#shared-assets-architecture" class="header-anchor" aria-label="Link to section">#</a></h2>
+<p>All pages link to:</p>
+<ul>
+<li><code>assets/style.css</code></li>
+<li><code>assets/theme.js</code></li>
+</ul>
+<p>Nested pages (e.g. <code>guide/theming.html</code>) automatically link to <code>../assets/style.css</code>, guaranteeing that assets are cached once by the browser and only regenerated when their contents change!</p>
+
+        </article>
+        <footer class="page-footer">
+          <span>Generated with <strong>MDRender</strong></span>
+          <a href="#top" class="back-to-top">↑ Back to top</a>
+        </footer>
+      </main>
+
+<aside class="toc-sidebar">
+  <div class="toc-title">On this page</div>
+  <ul class="toc-list">
+    <li class="toc-item depth-2"><a class="toc-link" href="#available-themes">Available Themes</a></li>
+    <li class="toc-item depth-2"><a class="toc-link" href="#shared-assets-architecture">Shared Assets Architecture</a></li>
+  </ul>
+</aside>
+
+    </div>
+  </div>
+
+  <script src="../assets/theme.js"></script>
+</body>
+</html>

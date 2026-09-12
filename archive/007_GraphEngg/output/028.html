@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>The Graph Engineering Manifesto - MDRender Docs</title>
+  <link rel="stylesheet" href="./assets/style.css">
+  <!-- Anti-FOUC theme pre-hydration -->
+  <script>
+    (function() {
+      const theme = localStorage.getItem('mdrender-theme') || 'github';
+      const savedMode = localStorage.getItem('mdrender-mode') || 'auto';
+      const mode = savedMode === 'auto'
+        ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light')
+        : savedMode;
+      document.documentElement.setAttribute('data-theme', theme);
+      document.documentElement.setAttribute('data-mode', mode);
+    })();
+  </script>
+</head>
+<body>
+  <div class="app-container">
+    <header class="top-header">
+      <div class="header-left">
+        <button class="mobile-nav-toggle" type="button" aria-label="Toggle navigation">☰</button>
+        <a class="site-title" href="index.html">
+          <span>📖</span>
+          <span>MDRender Docs</span>
+        </a>
+      </div>
+      <div class="header-right">
+        <select id="theme-select" class="control-select" aria-label="Select Theme">
+          <option value="github">GitHub</option>
+          <option value="dracula">Dracula</option>
+          <option value="nord">Nord</option>
+          <option value="solarized">Solarized</option>
+          <option value="sepia">Sepia</option>
+        </select>
+        <button id="mode-toggle" class="control-btn mode-toggle-btn" type="button" aria-label="Toggle dark/light mode">
+          💻 Auto
+        </button>
+      </div>
+    </header>
+
+    <div class="layout-body">
+      <div class="sidebar-backdrop"></div>
+      <aside class="sidebar">
+        <div class="sidebar-search">
+          <input type="text" class="search-input" placeholder="Search pages..." aria-label="Filter navigation">
+        </div>
+  <div class="nav-section-title">General</div>
+  <ul class="nav-list">
+    <li class="nav-item"><a class="nav-link" href="index.html">Overview</a></li>
+    <li class="nav-item"><a class="nav-link" href="020.html">020</a></li>
+    <li class="nav-item"><a class="nav-link" href="021.html">021</a></li>
+    <li class="nav-item"><a class="nav-link" href="022.html">022</a></li>
+    <li class="nav-item"><a class="nav-link" href="023.html">023</a></li>
+    <li class="nav-item"><a class="nav-link" href="024.html">024</a></li>
+    <li class="nav-item"><a class="nav-link" href="025.html">025</a></li>
+    <li class="nav-item"><a class="nav-link" href="026.html">026</a></li>
+    <li class="nav-item"><a class="nav-link" href="027.html">027</a></li>
+    <li class="nav-item"><a class="nav-link active" href="#">028</a></li>
+    <li class="nav-item"><a class="nav-link" href="029.html">029</a></li>
+    <li class="nav-item"><a class="nav-link" href="030.html">030</a></li>
+    <li class="nav-item"><a class="nav-link" href="031.html">031</a></li>
+    <li class="nav-item"><a class="nav-link" href="032.html">032</a></li>
+    <li class="nav-item"><a class="nav-link" href="033.html">033</a></li>
+    <li class="nav-item"><a class="nav-link" href="034.html">034</a></li>
+    <li class="nav-item"><a class="nav-link" href="035.html">035</a></li>
+    <li class="nav-item"><a class="nav-link" href="036.html">036</a></li>
+    <li class="nav-item"><a class="nav-link" href="037.html">037</a></li>
+    <li class="nav-item"><a class="nav-link" href="038.html">038</a></li>
+    <li class="nav-item"><a class="nav-link" href="039.html">039</a></li>
+    <li class="nav-item"><a class="nav-link" href="040.html">040</a></li>
+  </ul>
+
+      </aside>
+
+      <main class="content-area">
+        <article>
+<h2 id="request">Request<a href="#request" class="header-anchor" aria-label="Link to section">#</a></h2>
+<p>now create the detailed blog for ###  7. W3C PROV-O: Cryptographic Provenance for AI Decisions</p>
+<h2 id="response">Response<a href="#response" class="header-anchor" aria-label="Link to section">#</a></h2><h1 id="the-graph-engineering-manifesto">The Graph Engineering Manifesto<a href="#the-graph-engineering-manifesto" class="header-anchor" aria-label="Link to section">#</a></h1><h2 id="part-7-w3c-prov-o-cryptographic-provenance-for-ai-decisions">Part 7: W3C PROV-O: Cryptographic Provenance for AI Decisions<a href="#part-7-w3c-prov-o-cryptographic-provenance-for-ai-decisions" class="header-anchor" aria-label="Link to section">#</a></h2>
+<p>In [Part 6], we explored why naive RAG fails in the enterprise. We replaced fuzzy vector similarity searches with a rigid Knowledge Graph (<code>ortho-knowledge-graph</code>) and implemented our first layer of defense: the <strong>Ontology Gate</strong>. By defining strict SHACL-style schemas, we mathematically prevented the LLM from inventing illogical relationships.</p>
+<p>But the Ontology Gate only checks the <em>shape</em> of the data. It ensures that <code>[Patient] -&gt; (ENROLLED_IN) -&gt; [Trial]</code> is grammatically correct within our business logic.</p>
+<p>It does not check if the statement is actually <em>true</em>.</p>
+<p>LLMs are notorious for "hallucinating" highly plausible, perfectly formatted lies. An agent might confidently assert that Patient P-001 is enrolled in the trial, simply because that outcome aligns with its training data or the surrounding context.</p>
+<p>If you are auditing clinical trials, executing financial trades, or managing legal discovery, you cannot rely on an LLM promising that a fact is real. You need cryptographic proof.</p>
+<h3 id="the-provenance-crisis">The Provenance Crisis<a href="#the-provenance-crisis" class="header-anchor" aria-label="Link to section">#</a></h3>
+<p>In standard agentic frameworks, data ingestion looks like this:</p>
+<ol>
+<li>The agent reads a PDF.</li>
+<li>The agent generates a summary or extracts an entity.</li>
+<li>The extracted data is pushed into a database.</li>
+</ol>
+<p>At step 3, the connection to reality is severed. The database holds a fact (<code>Patient P-001 is Enrolled</code>), but it has absolutely no idea <em>where</em> that fact came from.</p>
+<p>When a human auditor inevitably asks, <em>"Why did the AI system conclude Patient P-001 is enrolled?"</em> the engineers have to shrug. They can't point to a specific page in a specific document; they can only point to a JSON blob that the LLM generated three weeks ago. This black-box ingestion pipeline is an immediate failure of compliance.</p>
+<h3 id="enter-w3c-prov-o">Enter W3C PROV-O<a href="#enter-w3c-prov-o" class="header-anchor" aria-label="Link to section">#</a></h3>
+<p>To solve this, Orthograph OS implements the <strong>W3C PROV-O</strong> (Provenance Ontology) standard at the database kernel level.</p>
+<p>PROV-O is a W3C specification designed to provide an interoperable framework for exchanging provenance information. It maps out the lineage of data by linking Entities (the data), Activities (the processes that created them), and Agents (the actors who executed the processes).</p>
+<p>In Orthograph, a fact is never just a triplet. It is a four-dimensional object bound to an immutable lineage chain.</p>
+<h3 id="the-provenance-gate-rejecting-hallucinations-at-the-kernel">The Provenance Gate: Rejecting Hallucinations at the Kernel<a href="#the-provenance-gate-rejecting-hallucinations-at-the-kernel" class="header-anchor" aria-label="Link to section">#</a></h3>
+<p>When the Executor agent calls the <code>insert_fact</code> MCP tool, providing the subject, relation, and object, the Orthograph kernel does not immediately save the data. It hits the <strong>Provenance Gate</strong>.</p>
+<p>The prompt explicitly instructs the LLM: <em>“You MUST supply a valid <code>source_document_id</code>. If you invent a fact, the Knowledge Graph will violently reject the transaction.”</em></p>
+<p>But we don't trust the prompt. We enforce it in Python.</p>
+<div class="code-block-wrapper">
+  <div class="code-block-header">
+    <span class="code-lang">python</span>
+    <button class="copy-btn" type="button" aria-label="Copy code">Copy</button>
+  </div>
+<pre><code class="language-python"># packages/ortho-knowledge-graph/src/ortho_knowledge_graph/provenance/tracker.py
+
+class DocumentRegistry:
+    """Trusted corpus. Only documents registered here may back a fact."""
+    def __init__(self) -&gt; None:
+        self._documents: dict[str, dict] = {}
+        # ... registration methods ...
+
+class ProvenanceTracker:
+    def create_tag(
+        self, agent_id: str, document_id: str, chunk_index: int, confidence: float
+    ) -&gt; ProvenanceTag:
+        
+        # The Provenance Gate
+        if not self.documents.verify(document_id):
+            raise ProvenanceError(
+                f"PROV-O violation: source document '{document_id}' is not registered "
+                "in the trusted corpus. Agent hallucination detected."
+            )
+            
+        # ... proceed to generate cryptographic lineage ...
+</code></pre>
+</div>
+<p>If the LLM hallucinates a fact from thin air, or makes up a fake document ID (e.g., <code>source_doc: "imaginary_report_v2"</code>), the Python kernel throws a <code>PROV_O_VIOLATION</code>. The transaction is aborted.</p>
+<p>The LLM is mathematically barred from injecting data into the enterprise memory unless it can explicitly cite a document registered in the trusted corpus.</p>
+<h3 id="cryptographic-lineage-the-fact-hash">Cryptographic Lineage: The fact_hash<a href="#cryptographic-lineage-the-fact-hash" class="header-anchor" aria-label="Link to section">#</a></h3>
+<p>Passing the Provenance Gate is just the first step. Next, Orthograph binds the fact to its origin using cryptographic hashes (SHA-256).</p>
+<p>Every time a fact is committed, the system generates an immutable lineage chain representing the extraction event:</p>
+<ol>
+<li><strong>Document:</strong> <code>trial_data_v2.pdf</code></li>
+<li><strong>SourceFragment:</strong> Hash of <code>(Document ID + Chunk Index)</code>.</li>
+<li><strong>Extraction:</strong> Hash of <code>(Agent ID + Fragment ID + Timestamp + Confidence)</code>.</li>
+<li><strong>Fact:</strong> Hash of <code>(Subject + Relation + Object + Extraction Hash)</code>.</li>
+</ol>
+<div class="code-block-wrapper">
+  <div class="code-block-header">
+    <span class="code-lang">python</span>
+    <button class="copy-btn" type="button" aria-label="Copy code">Copy</button>
+  </div>
+<pre><code class="language-python"># packages/ortho-knowledge-graph/src/ortho_knowledge_graph/provenance/tracker.py
+
+def compute_fact_hash(
+    subject: str, relation: str, obj: str, extraction_hash: str
+) -&gt; str:
+    """Fingerprint of the committed triple bound to its extraction."""
+    joined = f"{subject}|{relation}|{obj}|{extraction_hash}"
+    return f"hash-{hashlib.sha256(joined.encode('utf-8')).hexdigest()[:24]}"
+</code></pre>
+</div>
+<p>This creates an unbreakable, machine-auditable chain.</p>
+<p>If you look at <code>Fact-104</code> in the database, its <code>fact_hash</code> contains the <code>extraction_hash</code>, which contains the <code>fragment_id</code>. You can trace the fact back to the exact millisecond it was extracted, the exact agent model that performed the extraction (<code>claude-3-5-haiku</code>), and the exact paragraph of the exact PDF it originated from.</p>
+<p>If the underlying source document is ever updated or retracted, the system knows exactly which facts in the graph were derived from it and must be re-evaluated.</p>
+<h3 id="conclusion">Conclusion<a href="#conclusion" class="header-anchor" aria-label="Link to section">#</a></h3>
+<p>By enforcing the <strong>Provenance Gate</strong> and generating cryptographic <code>fact_hash</code> chains, Orthograph OS completely eliminates data hallucination as an infrastructure risk.</p>
+<p>The LLM might still occasionally try to invent a fact, but the graph database acts as an unyielding bouncer, demanding a valid receipt before opening the door. Accountability is baked into the math of the storage layer.</p>
+<p>However, even if a fact is ontologically correct and backed by a real document, a problem remains. What happens when two perfectly valid, provenanced documents contradict each other?</p>
+<p>In <strong>Part 8: The Fusion Gate: Time-Travel and Conflict Quarantine</strong>, we will tackle the hardest problem in semantic memory. We will explore how Orthograph handles temporal logic, overlapping functional relationships, and why the database must quarantine conflicts rather than silently overwriting data.</p>
+
+        </article>
+        <footer class="page-footer">
+          <span>Generated with <strong>MDRender</strong></span>
+          <a href="#top" class="back-to-top">↑ Back to top</a>
+        </footer>
+      </main>
+
+<aside class="toc-sidebar">
+  <div class="toc-title">On this page</div>
+  <ul class="toc-list">
+    <li class="toc-item depth-2"><a class="toc-link" href="#request">Request</a></li>
+    <li class="toc-item depth-2"><a class="toc-link" href="#response">Response</a></li>
+    <li class="toc-item depth-2"><a class="toc-link" href="#part-7-w3c-prov-o-cryptographic-provenance-for-ai-decisions">Part 7: W3C PROV-O: Cryptographic Provenance for AI Decisions</a></li>
+    <li class="toc-item depth-3"><a class="toc-link" href="#the-provenance-crisis">The Provenance Crisis</a></li>
+    <li class="toc-item depth-3"><a class="toc-link" href="#enter-w3c-prov-o">Enter W3C PROV-O</a></li>
+    <li class="toc-item depth-3"><a class="toc-link" href="#the-provenance-gate-rejecting-hallucinations-at-the-kernel">The Provenance Gate: Rejecting Hallucinations at the Kernel</a></li>
+    <li class="toc-item depth-3"><a class="toc-link" href="#cryptographic-lineage-the-fact-hash">Cryptographic Lineage: The fact_hash</a></li>
+    <li class="toc-item depth-3"><a class="toc-link" href="#conclusion">Conclusion</a></li>
+  </ul>
+</aside>
+
+    </div>
+  </div>
+
+  <script src="./assets/theme.js"></script>
+</body>
+</html>

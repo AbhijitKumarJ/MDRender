@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>The Graph Engineering Manifesto - MDRender Docs</title>
+  <link rel="stylesheet" href="./assets/style.css">
+  <!-- Anti-FOUC theme pre-hydration -->
+  <script>
+    (function() {
+      const theme = localStorage.getItem('mdrender-theme') || 'github';
+      const savedMode = localStorage.getItem('mdrender-mode') || 'auto';
+      const mode = savedMode === 'auto'
+        ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light')
+        : savedMode;
+      document.documentElement.setAttribute('data-theme', theme);
+      document.documentElement.setAttribute('data-mode', mode);
+    })();
+  </script>
+</head>
+<body>
+  <div class="app-container">
+    <header class="top-header">
+      <div class="header-left">
+        <button class="mobile-nav-toggle" type="button" aria-label="Toggle navigation">☰</button>
+        <a class="site-title" href="index.html">
+          <span>📖</span>
+          <span>MDRender Docs</span>
+        </a>
+      </div>
+      <div class="header-right">
+        <select id="theme-select" class="control-select" aria-label="Select Theme">
+          <option value="github">GitHub</option>
+          <option value="dracula">Dracula</option>
+          <option value="nord">Nord</option>
+          <option value="solarized">Solarized</option>
+          <option value="sepia">Sepia</option>
+        </select>
+        <button id="mode-toggle" class="control-btn mode-toggle-btn" type="button" aria-label="Toggle dark/light mode">
+          💻 Auto
+        </button>
+      </div>
+    </header>
+
+    <div class="layout-body">
+      <div class="sidebar-backdrop"></div>
+      <aside class="sidebar">
+        <div class="sidebar-search">
+          <input type="text" class="search-input" placeholder="Search pages..." aria-label="Filter navigation">
+        </div>
+  <div class="nav-section-title">General</div>
+  <ul class="nav-list">
+    <li class="nav-item"><a class="nav-link" href="index.html">Overview</a></li>
+    <li class="nav-item"><a class="nav-link" href="020.html">020</a></li>
+    <li class="nav-item"><a class="nav-link" href="021.html">021</a></li>
+    <li class="nav-item"><a class="nav-link" href="022.html">022</a></li>
+    <li class="nav-item"><a class="nav-link" href="023.html">023</a></li>
+    <li class="nav-item"><a class="nav-link" href="024.html">024</a></li>
+    <li class="nav-item"><a class="nav-link" href="025.html">025</a></li>
+    <li class="nav-item"><a class="nav-link" href="026.html">026</a></li>
+    <li class="nav-item"><a class="nav-link" href="027.html">027</a></li>
+    <li class="nav-item"><a class="nav-link" href="028.html">028</a></li>
+    <li class="nav-item"><a class="nav-link active" href="#">029</a></li>
+    <li class="nav-item"><a class="nav-link" href="030.html">030</a></li>
+    <li class="nav-item"><a class="nav-link" href="031.html">031</a></li>
+    <li class="nav-item"><a class="nav-link" href="032.html">032</a></li>
+    <li class="nav-item"><a class="nav-link" href="033.html">033</a></li>
+    <li class="nav-item"><a class="nav-link" href="034.html">034</a></li>
+    <li class="nav-item"><a class="nav-link" href="035.html">035</a></li>
+    <li class="nav-item"><a class="nav-link" href="036.html">036</a></li>
+    <li class="nav-item"><a class="nav-link" href="037.html">037</a></li>
+    <li class="nav-item"><a class="nav-link" href="038.html">038</a></li>
+    <li class="nav-item"><a class="nav-link" href="039.html">039</a></li>
+    <li class="nav-item"><a class="nav-link" href="040.html">040</a></li>
+  </ul>
+
+      </aside>
+
+      <main class="content-area">
+        <article>
+<h2 id="request">Request<a href="#request" class="header-anchor" aria-label="Link to section">#</a></h2>
+<p>now create the detailed blog for ###  8. The Fusion Gate: Time-Travel and Conflict Quarantine</p>
+<h2 id="response">Response<a href="#response" class="header-anchor" aria-label="Link to section">#</a></h2><h1 id="the-graph-engineering-manifesto">The Graph Engineering Manifesto<a href="#the-graph-engineering-manifesto" class="header-anchor" aria-label="Link to section">#</a></h1><h2 id="part-8-the-fusion-gate-time-travel-and-conflict-quarantine">Part 8: The Fusion Gate: Time-Travel and Conflict Quarantine<a href="#part-8-the-fusion-gate-time-travel-and-conflict-quarantine" class="header-anchor" aria-label="Link to section">#</a></h2>
+<p>In [Part 6] and [Part 7], we built the first two defenses of our Semantic Memory layer (<code>ortho-knowledge-graph</code>). The <strong>Ontology Gate</strong> ensures that our agents can only extract relationships that exist in our business logic. The <strong>Provenance Gate</strong> ensures that every extracted fact carries a cryptographic receipt linking it to a trusted source document.</p>
+<p>Together, these gates eliminate hallucination. But eliminating hallucination does not eliminate contradiction.</p>
+<p>Enterprise data is messy and constantly changing. Consider the following scenario in our clinical trial database:</p>
+<ul>
+<li><strong>Document A (Processed Monday):</strong> "Patient P-001 is assigned to the Placebo Arm."</li>
+<li><strong>Document B (Processed Friday):</strong> "Patient P-001 has been reassigned to the Experimental Arm."</li>
+</ul>
+<p>Both facts perfectly pass the Ontology Gate. Both facts have flawless cryptographic PROV-O lineage back to trusted documents.</p>
+<p>How does a naive vector database (standard RAG) handle this? It simply stores both. When the agent asks, <em>"Which arm is P-001 in?"</em> the RAG pipeline pulls both contradictory chunks into the prompt, forcing the LLM to guess which one is right.</p>
+<p>How does a standard SQL database handle this? It issues an <code>UPDATE</code> statement. It silently overwrites the old fact with the new fact, completely destroying the historical record.</p>
+<p>Both approaches are unacceptable in Graph Engineering. We need a system that understands time, and we need a system that refuses to make autonomous decisions about conflicting truths. We need the <strong>Fusion Gate</strong>.</p>
+<hr />
+<h3 id="understanding-functional-relations">Understanding Functional Relations<a href="#understanding-functional-relations" class="header-anchor" aria-label="Link to section">#</a></h3>
+<p>In our <code>GraphSchema</code>, we don't just define domain and range. We define mathematical constraints. One of the most important constraints is the <code>functional</code> flag.</p>
+<div class="code-block-wrapper">
+  <div class="code-block-header">
+    <span class="code-lang">python</span>
+    <button class="copy-btn" type="button" aria-label="Copy code">Copy</button>
+  </div>
+<pre><code class="language-python"># packages/ortho-knowledge-graph/src/ortho_knowledge_graph/ontology/schema.py
+schema.add_relation(
+    "ASSIGNED_ARM", 
+    domain="PatientRecord", 
+    range="TrialArm", 
+    functional=True  # &lt;--- The critical flag
+)
+</code></pre>
+</div>
+<p>A functional relation means that a subject can only have <em>one</em> of these relationships at a time. A patient can report multiple adverse events (non-functional), but they can only be assigned to one trial arm.</p>
+<p>When the Executor agent attempts to ingest Document B (<code>[P-001] -&gt; (ASSIGNED_ARM) -&gt; [Experimental]</code>), the kernel checks the database. It sees that <code>[P-001]</code> already has an <code>ASSIGNED_ARM</code> relationship.</p>
+<p>Because the relation is marked <code>functional=True</code>, the transaction hits a hard stop.</p>
+<h3 id="time-travel-the-temporal-window">Time-Travel: The Temporal Window<a href="#time-travel-the-temporal-window" class="header-anchor" aria-label="Link to section">#</a></h3>
+<p>But wait—patients <em>are</em> allowed to change trial arms over time. A functional conflict only occurs if two different facts are claimed to be true <em>at the exact same time</em>.</p>
+<p>Orthograph solves this by implementing <strong>Temporal Knowledge Graphs</strong>. Every fact in the system supports a <code>valid_from</code> and <code>valid_to</code> half-open time window.</p>
+<p>If the incoming fact from Document B specifies <code>valid_from="2026-08-01"</code>, and the existing fact from Document A specifies <code>valid_to="2026-07-31"</code>, there is no conflict. The graph accepts the new fact.</p>
+<p>This enables powerful "Time-Travel" queries. The Supervisor agent can use the MCP tool <code>query_graph_at(timestamp)</code> to see the graph exactly as it existed on July 15th, completely blind to future events.</p>
+<h3 id="the-quarantine-queue">The Quarantine Queue<a href="#the-quarantine-queue" class="header-anchor" aria-label="Link to section">#</a></h3>
+<p>But what happens if the dates <em>do</em> overlap? What if Document A and Document B both claim to be the definitive truth for the month of August?</p>
+<p>In a lesser framework, the database would throw a fatal error, crashing the ingestion pipeline. In Orthograph OS, we use the <strong>Semantic Conflict Queue</strong>.</p>
+<div class="code-block-wrapper">
+  <div class="code-block-header">
+    <span class="code-lang">python</span>
+    <button class="copy-btn" type="button" aria-label="Copy code">Copy</button>
+  </div>
+<pre><code class="language-python"># packages/ortho-knowledge-graph/src/ortho_knowledge_graph/fusion/resolver.py
+class SemanticConflictQueue:
+    def check_functional_violation(self, new_triplet, existing_triplets, is_functional):
+        # ... logic checking for overlapping TimeWindows ...
+        if new_window.overlaps(existing_window):
+            self._quarantine_conflict(new_triplet, existing)
+            return True
+        return False
+</code></pre>
+</div>
+<p>If the Fusion Gate detects an overlapping functional conflict, it does <strong>not</strong> commit the new fact to the graph, nor does it crash. It quarantines the attempted fact.</p>
+<p>The <code>insert_fact</code> tool returns a typed, expected rejection to the Executor agent:</p>
+<div class="code-block-wrapper">
+  <div class="code-block-header">
+    <span class="code-lang">json</span>
+    <button class="copy-btn" type="button" aria-label="Copy code">Copy</button>
+  </div>
+<pre><code class="language-json">{
+  "status": "quarantined",
+  "ok": false,
+  "code": "FUSION_CONFLICT",
+  "reason": "Fact conflicts with an existing functional relation in the graph."
+}
+</code></pre>
+</div>
+<p>The Executor agent (which runs on a fast clock and a cheap model) cannot resolve this. It lacks the capability. It registers the gap in its <code>ledger.md</code> and moves on to its next task.</p>
+<h3 id="adjudication-by-the-supervisor">Adjudication by the Supervisor<a href="#adjudication-by-the-supervisor" class="header-anchor" aria-label="Link to section">#</a></h3>
+<p>This is where the <strong>Separation of Clocks</strong> (from Part 3) and <strong>Capability Security</strong> (from Part 11) shine.</p>
+<p>Later, the Supervisor agent wakes up on its slow tick. It has the necessary <code>supervisor</code> role to access privileged MCP tools. It calls <code>get_quarantined_conflicts()</code> and sees the collision.</p>
+<p>The Supervisor (running on a stronger reasoning model) retrieves the PROV-O lineage for both conflicting facts. It might discover that Document A is an informal email, while Document B is a signed clinical form.</p>
+<p>The Supervisor then uses the <code>resolve_conflict</code> MCP tool:</p>
+<div class="code-block-wrapper">
+  <div class="code-block-header">
+    <span class="code-lang">json</span>
+    <button class="copy-btn" type="button" aria-label="Copy code">Copy</button>
+  </div>
+<pre><code class="language-json">{
+  "conflict_id": "CFL-4",
+  "keep": "attempted",
+  "actor": "supervisor"
+}
+</code></pre>
+</div>
+<p>The Python kernel receives this command, pops the conflict from the quarantine queue, explicitly logs the Supervisor's decision, and commits Document B's fact to the graph.</p>
+<h3 id="conclusion">Conclusion<a href="#conclusion" class="header-anchor" aria-label="Link to section">#</a></h3>
+<p>By combining Temporal Windows with a Deterministic Quarantine Queue, we achieve a system that never loses historical data, never silently overwrites reality, and relies on strict, role-gated asynchronous adjudication to handle contradictions.</p>
+<p>We have successfully built a Knowledge Graph that is structurally immune to hallucination, untracked sources, and semantic collisions.</p>
+<p>But there is one final piece missing from our memory layer. We have stored the <em>data</em>. But how do we store the <em>thought process</em> of the agents themselves?</p>
+<p>In <strong>Part 9: Decisions are Nodes: Making AI Reasoning Legally Auditable</strong>, we will explore "Decision Intelligence"—the practice of saving an LLM's logical conclusions as permanent, queryable graph nodes mathematically bound to the facts they cite.</p>
+
+        </article>
+        <footer class="page-footer">
+          <span>Generated with <strong>MDRender</strong></span>
+          <a href="#top" class="back-to-top">↑ Back to top</a>
+        </footer>
+      </main>
+
+<aside class="toc-sidebar">
+  <div class="toc-title">On this page</div>
+  <ul class="toc-list">
+    <li class="toc-item depth-2"><a class="toc-link" href="#request">Request</a></li>
+    <li class="toc-item depth-2"><a class="toc-link" href="#response">Response</a></li>
+    <li class="toc-item depth-2"><a class="toc-link" href="#part-8-the-fusion-gate-time-travel-and-conflict-quarantine">Part 8: The Fusion Gate: Time-Travel and Conflict Quarantine</a></li>
+    <li class="toc-item depth-3"><a class="toc-link" href="#understanding-functional-relations">Understanding Functional Relations</a></li>
+    <li class="toc-item depth-3"><a class="toc-link" href="#time-travel-the-temporal-window">Time-Travel: The Temporal Window</a></li>
+    <li class="toc-item depth-3"><a class="toc-link" href="#the-quarantine-queue">The Quarantine Queue</a></li>
+    <li class="toc-item depth-3"><a class="toc-link" href="#adjudication-by-the-supervisor">Adjudication by the Supervisor</a></li>
+    <li class="toc-item depth-3"><a class="toc-link" href="#conclusion">Conclusion</a></li>
+  </ul>
+</aside>
+
+    </div>
+  </div>
+
+  <script src="./assets/theme.js"></script>
+</body>
+</html>

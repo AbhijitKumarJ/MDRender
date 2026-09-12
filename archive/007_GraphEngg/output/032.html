@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>The Graph Engineering Manifesto - MDRender Docs</title>
+  <link rel="stylesheet" href="./assets/style.css">
+  <!-- Anti-FOUC theme pre-hydration -->
+  <script>
+    (function() {
+      const theme = localStorage.getItem('mdrender-theme') || 'github';
+      const savedMode = localStorage.getItem('mdrender-mode') || 'auto';
+      const mode = savedMode === 'auto'
+        ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light')
+        : savedMode;
+      document.documentElement.setAttribute('data-theme', theme);
+      document.documentElement.setAttribute('data-mode', mode);
+    })();
+  </script>
+</head>
+<body>
+  <div class="app-container">
+    <header class="top-header">
+      <div class="header-left">
+        <button class="mobile-nav-toggle" type="button" aria-label="Toggle navigation">☰</button>
+        <a class="site-title" href="index.html">
+          <span>📖</span>
+          <span>MDRender Docs</span>
+        </a>
+      </div>
+      <div class="header-right">
+        <select id="theme-select" class="control-select" aria-label="Select Theme">
+          <option value="github">GitHub</option>
+          <option value="dracula">Dracula</option>
+          <option value="nord">Nord</option>
+          <option value="solarized">Solarized</option>
+          <option value="sepia">Sepia</option>
+        </select>
+        <button id="mode-toggle" class="control-btn mode-toggle-btn" type="button" aria-label="Toggle dark/light mode">
+          💻 Auto
+        </button>
+      </div>
+    </header>
+
+    <div class="layout-body">
+      <div class="sidebar-backdrop"></div>
+      <aside class="sidebar">
+        <div class="sidebar-search">
+          <input type="text" class="search-input" placeholder="Search pages..." aria-label="Filter navigation">
+        </div>
+  <div class="nav-section-title">General</div>
+  <ul class="nav-list">
+    <li class="nav-item"><a class="nav-link" href="index.html">Overview</a></li>
+    <li class="nav-item"><a class="nav-link" href="020.html">020</a></li>
+    <li class="nav-item"><a class="nav-link" href="021.html">021</a></li>
+    <li class="nav-item"><a class="nav-link" href="022.html">022</a></li>
+    <li class="nav-item"><a class="nav-link" href="023.html">023</a></li>
+    <li class="nav-item"><a class="nav-link" href="024.html">024</a></li>
+    <li class="nav-item"><a class="nav-link" href="025.html">025</a></li>
+    <li class="nav-item"><a class="nav-link" href="026.html">026</a></li>
+    <li class="nav-item"><a class="nav-link" href="027.html">027</a></li>
+    <li class="nav-item"><a class="nav-link" href="028.html">028</a></li>
+    <li class="nav-item"><a class="nav-link" href="029.html">029</a></li>
+    <li class="nav-item"><a class="nav-link" href="030.html">030</a></li>
+    <li class="nav-item"><a class="nav-link" href="031.html">031</a></li>
+    <li class="nav-item"><a class="nav-link active" href="#">032</a></li>
+    <li class="nav-item"><a class="nav-link" href="033.html">033</a></li>
+    <li class="nav-item"><a class="nav-link" href="034.html">034</a></li>
+    <li class="nav-item"><a class="nav-link" href="035.html">035</a></li>
+    <li class="nav-item"><a class="nav-link" href="036.html">036</a></li>
+    <li class="nav-item"><a class="nav-link" href="037.html">037</a></li>
+    <li class="nav-item"><a class="nav-link" href="038.html">038</a></li>
+    <li class="nav-item"><a class="nav-link" href="039.html">039</a></li>
+    <li class="nav-item"><a class="nav-link" href="040.html">040</a></li>
+  </ul>
+
+      </aside>
+
+      <main class="content-area">
+        <article>
+<h2 id="request">Request<a href="#request" class="header-anchor" aria-label="Link to section">#</a></h2>
+<p>now create the detailed blog for ###  11. Cross-Language Capability Security (RBAC for Agents)</p>
+<h2 id="response">Response<a href="#response" class="header-anchor" aria-label="Link to section">#</a></h2><h1 id="the-graph-engineering-manifesto">The Graph Engineering Manifesto<a href="#the-graph-engineering-manifesto" class="header-anchor" aria-label="Link to section">#</a></h1><h2 id="part-11-cross-language-capability-security-rbac-for-agents">Part 11: Cross-Language Capability Security (RBAC for Agents)<a href="#part-11-cross-language-capability-security-rbac-for-agents" class="header-anchor" aria-label="Link to section">#</a></h2>
+<p>In [Part 10], we successfully connected our TypeScript orchestrator to our Python Knowledge Graph using the Model Context Protocol (MCP). We created a seamless bridge where the LLM can natively invoke complex data-science tools over HTTP.</p>
+<p>But this convenience introduces a massive security vulnerability.</p>
+<p>Our Python MCP server exposes 10 tools. Some are harmless data-entry tools (<code>insert_fact</code>, <code>record_decision</code>). But others are highly privileged, destructive, or adjudicative tools (<code>resolve_conflict</code>, <code>merge_entities</code>, <code>delete_fact</code>).</p>
+<p>If you recall from our Constitution, we rely on the <strong>Separation of Clocks and Context</strong>. The Executor agent does the grunt work; the Supervisor agent judges the work.</p>
+<p>If the Executor encounters a temporal functional conflict (e.g., trying to assign a patient to two trial arms simultaneously), the Python Fusion Gate quarantines the fact. The Executor is supposed to log the anomaly in <code>ledger.md</code> and move on.</p>
+<p>But LLMs are "helpful" to a fault. If the Executor agent sees the <code>resolve_conflict</code> tool in its MCP cache, it might decide to be proactive. It might hallucinate a justification and force the conflict resolution itself, completely bypassing the clean-context Supervisor audit.</p>
+<p>We cannot rely on a prompt saying <em>"Please do not use the resolve_conflict tool."</em> We need cryptographic, cross-language Role-Based Access Control (RBAC).</p>
+<p>We need <strong>Capability Security</strong>.</p>
+<hr />
+<h3 id="the-three-layers-of-defense">The Three Layers of Defense<a href="#the-three-layers-of-defense" class="header-anchor" aria-label="Link to section">#</a></h3>
+<p>Orthograph OS implements Capability Security not by trusting one single component, but by enforcing the role boundary at three distinct layers: The Engine, The Bridge, and The Server.</p>
+<p>Let's trace how a rogue Executor agent is systematically blocked from calling <code>merge_entities</code>.</p>
+<h4 id="layer-1-the-engine-typescript-filtering">Layer 1: The Engine (TypeScript Filtering)<a href="#layer-1-the-engine-typescript-filtering" class="header-anchor" aria-label="Link to section">#</a></h4>
+<p>The first line of defense is simply hiding the tool from the LLM's context window.</p>
+<p>In <code>packages/ortho-task-graph/src/capabilities.ts</code>, Orthograph defines a rigid <code>ROLE_CAPABILITIES</code> matrix.</p>
+<div class="code-block-wrapper">
+  <div class="code-block-header">
+    <span class="code-lang">typescript</span>
+    <button class="copy-btn" type="button" aria-label="Copy code">Copy</button>
+  </div>
+<pre><code class="language-typescript">export const ROLE_CAPABILITIES: Record&lt;Role, ReadonlySet&lt;string&gt;&gt; = {
+    executor: new Set([
+        "insert_fact",
+        "record_decision",
+        "hybrid_search",
+        "ledger.mark_pending_audit",
+        "ledger.register_gap",
+    ]),
+    supervisor: new Set([
+        "get_quarantined_conflicts",
+        "resolve_conflict", // Supervisor ONLY
+        "merge_entities",   // Supervisor ONLY
+        "query_entities",
+        "get_provenance",
+        // ...
+    ]),
+    // ...
+};
+</code></pre>
+</div>
+<p>When the <code>OrthoWorkflow</code> boots up the Executor agent, it uses <code>filterToolsByRole()</code> to actively strip <code>resolve_conflict</code> and <code>merge_entities</code> from the array of tools sent to the Anthropic API.</p>
+<p>The Executor LLM physically cannot see that the tools exist.</p>
+<h4 id="layer-2-the-bridge-the-client-gate">Layer 2: The Bridge (The Client Gate)<a href="#layer-2-the-bridge-the-client-gate" class="header-anchor" aria-label="Link to section">#</a></h4>
+<p>But what if the LLM is incredibly clever? What if, through some prompt-injection attack or bizarre hallucination, it formats a perfect JSON <code>tool_use</code> block requesting <code>merge_entities</code> anyway?</p>
+<p>It hits the second layer of defense in <code>packages/ortho-mcp-bridge/src/client.ts</code>.</p>
+<p>When the <code>OrthoMCPClient</code> wraps the server tools for the agent, it injects an <code>assertToolAllowed</code> check.</p>
+<div class="code-block-wrapper">
+  <div class="code-block-header">
+    <span class="code-lang">typescript</span>
+    <button class="copy-btn" type="button" aria-label="Copy code">Copy</button>
+  </div>
+<pre><code class="language-typescript">public getTool(name: string, role: Role = this.role) {
+    // The Client Gate
+    assertToolAllowed(name, role); 
+    
+    // ... proceed to call MCP Server ...
+}
+</code></pre>
+</div>
+<p>If the Executor's runtime attempts to request a tool that is not in its <code>ROLE_CAPABILITIES</code> set, the TypeScript client instantly throws a <code>CapabilityDeniedError(code="CAPABILITY_DENIED")</code>. The request never even touches the network.</p>
+<h4 id="layer-3-the-server-cross-language-enforcement">Layer 3: The Server (Cross-Language Enforcement)<a href="#layer-3-the-server-cross-language-enforcement" class="header-anchor" aria-label="Link to section">#</a></h4>
+<p>Layers 1 and 2 are strong, but they rely on the TypeScript client playing by the rules. In enterprise security, the backend must never trust the client. What if a rogue script connects directly to the Python MCP server?</p>
+<p>We must enforce RBAC in Python.</p>
+<p>When the <code>OrthoMCPClient</code> initializes its SSE (Server-Sent Events) connection, it injects the agent's role into a custom HTTP header: <code>x-ortho-role</code>.</p>
+<div class="code-block-wrapper">
+  <div class="code-block-header">
+    <span class="code-lang">typescript</span>
+    <button class="copy-btn" type="button" aria-label="Copy code">Copy</button>
+  </div>
+<pre><code class="language-typescript">// TypeScript: Injecting the Role Header
+this.transport = new SSEClientTransport(new URL(serverUrl), {
+    requestInit: {
+        headers: { "x-ortho-role": "executor" },
+    },
+});
+</code></pre>
+</div>
+<p>On the Python side, the FastMCP server intercepts this header. For every privileged tool, we apply a hard enforcement check:</p>
+<div class="code-block-wrapper">
+  <div class="code-block-header">
+    <span class="code-lang">python</span>
+    <button class="copy-btn" type="button" aria-label="Copy code">Copy</button>
+  </div>
+<pre><code class="language-python"># packages/ortho-knowledge-graph/src/ortho_knowledge_graph/capabilities.py
+def require_role(headers: dict[str, str], tool: str) -&gt; None:
+    required = REQUIRED_ROLES.get(tool)
+    role = headers.get("x-ortho-role")
+    
+    if role not in required:
+        raise CapabilityDeniedError(tool, role, required)
+</code></pre>
+</div>
+<p>In <code>server.py</code>, the <code>merge_entities</code> tool explicitly calls this check:</p>
+<div class="code-block-wrapper">
+  <div class="code-block-header">
+    <span class="code-lang">python</span>
+    <button class="copy-btn" type="button" aria-label="Copy code">Copy</button>
+  </div>
+<pre><code class="language-python"># apps/memory-server/server.py
+@mcp.tool()
+def merge_entities(target: str, source: str, reason: str = "manual") -&gt; str:
+    headers = get_http_headers()
+    try:
+        require_role(headers, "merge_entities")
+    except Exception:
+        # Return a typed, deterministic denial back over MCP
+        return json.dumps(denied_result("merge_entities", headers.get("x-ortho-role")))
+        
+    return json.dumps(kg_client.merge_entities(target, source))
+</code></pre>
+</div>
+<p>If the Python server receives a request for <code>merge_entities</code> where <code>x-ortho-role</code> is <code>executor</code> (or missing entirely), it violently rejects the transaction. It returns a typed JSON payload (<code>{"status": "denied", "code": "CAPABILITY_DENIED"}</code>) back over the MCP bridge.</p>
+<p>The Executor receives the error, realizes its capability limits, and is forced to log the issue in <code>ledger.md</code> as a gap for the Supervisor to handle.</p>
+<h3 id="conclusion">Conclusion<a href="#conclusion" class="header-anchor" aria-label="Link to section">#</a></h3>
+<p>By enforcing Capability Security at the Prompt level, the Client level, and the Server level, Orthograph OS guarantees that agents can never exceed their intended authority.</p>
+<p>We have successfully locked the LLM into a deterministic cage. It can think freely, but it cannot act illegally.</p>
+<p>We have now covered the theoretical and architectural fundamentals of Graph Engineering. It is time to dive into the code.</p>
+<p>In <strong>Phase 5 (The Deep Dive)</strong>, we will unpack the exact anatomy of the Orthograph OS codebase. In <strong>Part 12: Anatomy of Orthograph: The TypeScript Task Kernel</strong>, we will explore how atomic writes, JSON state projections, and the <code>LedgerCommandHandler</code> make the orchestrator utterly crash-proof.</p>
+
+        </article>
+        <footer class="page-footer">
+          <span>Generated with <strong>MDRender</strong></span>
+          <a href="#top" class="back-to-top">↑ Back to top</a>
+        </footer>
+      </main>
+
+<aside class="toc-sidebar">
+  <div class="toc-title">On this page</div>
+  <ul class="toc-list">
+    <li class="toc-item depth-2"><a class="toc-link" href="#request">Request</a></li>
+    <li class="toc-item depth-2"><a class="toc-link" href="#response">Response</a></li>
+    <li class="toc-item depth-2"><a class="toc-link" href="#part-11-cross-language-capability-security-rbac-for-agents">Part 11: Cross-Language Capability Security (RBAC for Agents)</a></li>
+    <li class="toc-item depth-3"><a class="toc-link" href="#the-three-layers-of-defense">The Three Layers of Defense</a></li>
+    <li class="toc-item depth-4"><a class="toc-link" href="#layer-1-the-engine-typescript-filtering">Layer 1: The Engine (TypeScript Filtering)</a></li>
+    <li class="toc-item depth-4"><a class="toc-link" href="#layer-2-the-bridge-the-client-gate">Layer 2: The Bridge (The Client Gate)</a></li>
+    <li class="toc-item depth-4"><a class="toc-link" href="#layer-3-the-server-cross-language-enforcement">Layer 3: The Server (Cross-Language Enforcement)</a></li>
+    <li class="toc-item depth-3"><a class="toc-link" href="#conclusion">Conclusion</a></li>
+  </ul>
+</aside>
+
+    </div>
+  </div>
+
+  <script src="./assets/theme.js"></script>
+</body>
+</html>

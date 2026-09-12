@@ -1,0 +1,13 @@
+[package]
+name = "mdrender"
+version = "0.1.0"
+edition = "2021"
+authors = ["MDRender Authors"]
+description = "Markdown to HTML converter with light/dark modes and theme support"
+
+[dependencies]
+clap = { version = "4.5", features = ["derive"] }
+pulldown-cmark = { version = "0.13", default-features = false, features = ["html"] }
+walkdir = "2.5"
+notify = "6.1"
+anyhow = "1.0"

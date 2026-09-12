@@ -1,0 +1,908 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MDRender Studio - Web Dashboard</title>
+  <style>
+    :root {
+      --bg-base: #0f172a;
+      --bg-surface: #1e293b;
+      --bg-subtle: #334155;
+      --border: #475569;
+      --text: #f8fafc;
+      --text-muted: #94a3b8;
+      --primary: #38bdf8;
+      --primary-hover: #0284c7;
+      --success: #22c55e;
+      --warning: #f59e0b;
+      --danger: #ef4444;
+      --font-sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      --font-mono: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+      --radius: 8px;
+    }
+
+    [data-theme="light"] {
+      --bg-base: #f8fafc;
+      --bg-surface: #ffffff;
+      --bg-subtle: #f1f5f9;
+      --border: #cbd5e1;
+      --text: #0f172a;
+      --text-muted: #64748b;
+      --primary: #0284c7;
+      --primary-hover: #0369a1;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: var(--font-sans);
+      background: var(--bg-base);
+      color: var(--text);
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+
+    /* Top Navigation Header */
+    header {
+      height: 56px;
+      background: var(--bg-surface);
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 1.25rem;
+      flex-shrink: 0;
+      z-index: 10;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+      font-weight: 700;
+      font-size: 1.15rem;
+      color: var(--text);
+    }
+    .brand span.badge {
+      font-size: 0.7rem;
+      background: rgba(56, 189, 248, 0.15);
+      color: var(--primary);
+      padding: 0.2rem 0.5rem;
+      border-radius: 9999px;
+      font-weight: 600;
+    }
+
+    .header-actions {
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      padding: 0.45rem 0.85rem;
+      font-size: 0.825rem;
+      font-weight: 600;
+      border-radius: var(--radius);
+      border: 1px solid var(--border);
+      background: var(--bg-surface);
+      color: var(--text);
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+    .btn:hover { background: var(--bg-subtle); border-color: var(--text-muted); }
+    .btn-primary { background: var(--primary); color: #ffffff; border-color: var(--primary); }
+    .btn-primary:hover { background: var(--primary-hover); border-color: var(--primary-hover); }
+    .btn-success { background: var(--success); color: #ffffff; border-color: var(--success); }
+    .btn-danger { color: var(--danger); }
+    .btn-danger:hover { background: rgba(239, 68, 68, 0.1); border-color: var(--danger); }
+
+    /* App Workspace */
+    .workspace {
+      display: flex;
+      flex: 1;
+      overflow: hidden;
+    }
+
+    /* Left Sidebar */
+    .sidebar {
+      width: 280px;
+      background: var(--bg-surface);
+      border-right: 1px solid var(--border);
+      display: flex;
+      flex-direction: column;
+      flex-shrink: 0;
+    }
+
+    .sidebar-section-header {
+      padding: 0.75rem 1rem 0.5rem;
+      font-size: 0.75rem;
+      font-weight: 700;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .file-list {
+      list-style: none;
+      overflow-y: auto;
+      flex: 1;
+      padding: 0.25rem 0.5rem;
+    }
+
+    .file-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0.45rem 0.65rem;
+      border-radius: var(--radius);
+      font-size: 0.85rem;
+      cursor: pointer;
+      color: var(--text-muted);
+      transition: all 0.15s ease;
+      margin-bottom: 2px;
+    }
+    .file-item:hover { background: var(--bg-subtle); color: var(--text); }
+    .file-item.active { background: rgba(56, 189, 248, 0.15); color: var(--primary); font-weight: 600; }
+    .file-name { display: flex; align-items: center; gap: 0.4rem; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .file-delete-btn { opacity: 0; background: none; border: none; color: var(--danger); cursor: pointer; padding: 2px 4px; font-size: 0.8rem; border-radius: 4px; }
+    .file-item:hover .file-delete-btn { opacity: 1; }
+    .file-delete-btn:hover { background: rgba(239, 68, 68, 0.2); }
+
+    /* Archive Section */
+    .archive-section {
+      border-top: 1px solid var(--border);
+      max-height: 220px;
+      display: flex;
+      flex-direction: column;
+    }
+    .archive-list {
+      list-style: none;
+      overflow-y: auto;
+      padding: 0.25rem 0.5rem 0.75rem;
+    }
+    .archive-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0.35rem 0.65rem;
+      border-radius: var(--radius);
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      margin-bottom: 2px;
+    }
+    .archive-item:hover { background: var(--bg-subtle); color: var(--text); }
+    .archive-restore-btn {
+      background: none;
+      border: 1px solid var(--border);
+      color: var(--primary);
+      border-radius: 4px;
+      padding: 2px 6px;
+      font-size: 0.7rem;
+      cursor: pointer;
+    }
+    .archive-restore-btn:hover { background: var(--primary); color: #fff; }
+
+    /* Main Area */
+    .main-panel {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      background: var(--bg-base);
+    }
+
+    /* Sub-header / Toolbar */
+    .toolbar {
+      height: 44px;
+      background: var(--bg-surface);
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 1rem;
+    }
+
+    .active-file-title {
+      font-size: 0.875rem;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+    }
+    .dirty-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--warning);
+      display: none;
+    }
+    .dirty-dot.visible { display: inline-block; }
+
+    .view-modes {
+      display: flex;
+      background: var(--bg-subtle);
+      padding: 2px;
+      border-radius: var(--radius);
+      gap: 2px;
+    }
+    .view-btn {
+      background: transparent;
+      border: none;
+      color: var(--text-muted);
+      padding: 0.25rem 0.6rem;
+      font-size: 0.75rem;
+      border-radius: 6px;
+      cursor: pointer;
+      font-weight: 600;
+    }
+    .view-btn.active { background: var(--bg-surface); color: var(--text); box-shadow: 0 1px 2px rgba(0,0,0,0.2); }
+
+    /* Content Area: Split View */
+    .content-body {
+      flex: 1;
+      display: flex;
+      overflow: hidden;
+    }
+
+    .editor-pane {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      border-right: 1px solid var(--border);
+      background: var(--bg-base);
+    }
+
+    .format-bar {
+      display: flex;
+      align-items: center;
+      gap: 0.25rem;
+      padding: 0.35rem 0.75rem;
+      background: var(--bg-surface);
+      border-bottom: 1px solid var(--border);
+      overflow-x: auto;
+    }
+    .tool-btn {
+      background: transparent;
+      border: 1px solid transparent;
+      color: var(--text-muted);
+      border-radius: 4px;
+      padding: 0.2rem 0.4rem;
+      font-size: 0.8rem;
+      cursor: pointer;
+    }
+    .tool-btn:hover { background: var(--bg-subtle); color: var(--text); border-color: var(--border); }
+
+    textarea.editor {
+      flex: 1;
+      width: 100%;
+      border: none;
+      outline: none;
+      resize: none;
+      padding: 1.25rem;
+      font-family: var(--font-mono);
+      font-size: 0.9rem;
+      line-height: 1.6;
+      background: var(--bg-base);
+      color: var(--text);
+    }
+
+    .preview-pane {
+      flex: 1;
+      overflow-y: auto;
+      padding: 1.5rem 2rem;
+      background: var(--bg-surface);
+    }
+
+    .site-iframe-pane {
+      flex: 1;
+      display: none;
+      background: var(--bg-base);
+    }
+    .site-iframe-pane.active {
+      display: block;
+    }
+    iframe.site-frame {
+      width: 100%;
+      height: 100%;
+      border: none;
+    }
+
+    /* Modal dialogs */
+    .modal-backdrop {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.6);
+      backdrop-filter: blur(4px);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 100;
+    }
+    .modal-backdrop.open { display: flex; }
+
+    .modal-card {
+      background: var(--bg-surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      width: 100%;
+      max-width: 480px;
+      padding: 1.5rem;
+      box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.5);
+    }
+    .modal-title { font-size: 1.1rem; font-weight: 700; margin-bottom: 0.75rem; }
+    .modal-desc { font-size: 0.85rem; color: var(--text-muted); margin-bottom: 1rem; line-height: 1.5; }
+    .modal-input {
+      width: 100%;
+      padding: 0.6rem 0.8rem;
+      background: var(--bg-base);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      color: var(--text);
+      font-size: 0.9rem;
+      margin-bottom: 1.25rem;
+    }
+    .modal-input:focus { outline: 2px solid var(--primary); }
+    .modal-actions { display: flex; justify-content: flex-end; gap: 0.6rem; }
+
+    /* Toast notification */
+    .toast {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      padding: 0.75rem 1.25rem;
+      background: var(--bg-surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      box-shadow: 0 10px 15px -3px rgba(0,0,0,0.4);
+      font-size: 0.875rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      transform: translateY(100px);
+      opacity: 0;
+      transition: all 0.25s ease;
+      z-index: 200;
+    }
+    .toast.show { transform: translateY(0); opacity: 1; }
+    .toast.success { border-color: var(--success); }
+    .toast.error { border-color: var(--danger); }
+  </style>
+</head>
+<body data-theme="dark">
+
+  <!-- Top Header -->
+  <header>
+    <div class="brand">
+      <span>📖 MDRender Studio</span>
+      <span class="badge" id="status-badge">Ready</span>
+    </div>
+    <div class="header-actions">
+      <button class="btn" id="theme-mode-btn" title="Toggle Light / Dark">🌓 Mode</button>
+      <button class="btn" id="refresh-btn" title="Refresh files & preview">🔄 Refresh</button>
+      <button class="btn btn-primary" id="build-btn">🔨 Build Site</button>
+      <button class="btn btn-success" id="archive-modal-btn">📦 Archive</button>
+    </div>
+  </header>
+
+  <!-- Main Workspace -->
+  <div class="workspace">
+    <!-- Left Sidebar: Files & Archives -->
+    <aside class="sidebar">
+      <div class="sidebar-section-header">
+        <span>Active Documents</span>
+        <button class="btn" style="padding: 2px 6px; font-size: 0.75rem;" id="new-file-btn">+ New</button>
+      </div>
+      <ul class="file-list" id="file-list">
+        <!-- Injected via JS -->
+      </ul>
+
+      <!-- Archive Section -->
+      <div class="archive-section">
+        <div class="sidebar-section-header">
+          <span>Archives (<span id="archive-count">0</span>)</span>
+        </div>
+        <ul class="archive-list" id="archive-list">
+          <!-- Injected via JS -->
+        </ul>
+      </div>
+    </aside>
+
+    <!-- Main Editor & Preview Panel -->
+    <main class="main-panel">
+      <div class="toolbar">
+        <div class="active-file-title">
+          <span id="current-filename">Select a document</span>
+          <span class="dirty-dot" id="dirty-dot" title="Unsaved changes"></span>
+        </div>
+        <div style="display: flex; align-items: center; gap: 0.6rem;">
+          <button class="btn" id="save-btn" style="padding: 0.3rem 0.7rem;" title="Save file (Ctrl+S)">💾 Save</button>
+          <div class="view-modes">
+            <button class="view-btn active" data-view="split">Split</button>
+            <button class="view-btn" data-view="editor">Editor</button>
+            <button class="view-btn" data-view="preview">Preview</button>
+            <button class="view-btn" data-view="site">Rendered Site ↗</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="content-body" id="content-body">
+        <!-- Editor Pane -->
+        <div class="editor-pane" id="editor-pane">
+          <div class="format-bar">
+            <button class="tool-btn" data-fmt="h1">H1</button>
+            <button class="tool-btn" data-fmt="h2">H2</button>
+            <button class="tool-btn" data-fmt="bold"><strong>B</strong></button>
+            <button class="tool-btn" data-fmt="italic"><em>I</em></button>
+            <button class="tool-btn" data-fmt="code"><code>&lt;/&gt;</code></button>
+            <button class="tool-btn" data-fmt="quote">❝ Quote</button>
+            <button class="tool-btn" data-fmt="note">ℹ️ Note</button>
+            <button class="tool-btn" data-fmt="tip">💡 Tip</button>
+            <button class="tool-btn" data-fmt="warning">⚠️ Warn</button>
+            <button class="tool-btn" data-fmt="table">▦ Table</button>
+            <button class="tool-btn" data-fmt="task">☑ Task</button>
+          </div>
+          <textarea class="editor" id="markdown-editor" placeholder="Write markdown here..."></textarea>
+        </div>
+
+        <!-- In-Dashboard Live Preview Pane -->
+        <div class="preview-pane" id="preview-pane">
+          <div id="preview-content">
+            <p style="color: var(--text-muted);">Select a file to begin editing and previewing.</p>
+          </div>
+        </div>
+
+        <!-- Rendered Full Site Iframe Pane -->
+        <div class="site-iframe-pane" id="site-iframe-pane">
+          <iframe class="site-frame" id="site-frame" src="/output/index.html"></iframe>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <!-- New File Modal -->
+  <div class="modal-backdrop" id="new-file-modal">
+    <div class="modal-card">
+      <div class="modal-title">Create New Document</div>
+      <div class="modal-desc">Enter the relative markdown filename (e.g. <code>intro.md</code> or <code>guide/tutorial.md</code>):</div>
+      <input type="text" class="modal-input" id="new-filename-input" placeholder="guide/new-post.md">
+      <div class="modal-actions">
+        <button class="btn" id="cancel-new-file">Cancel</button>
+        <button class="btn btn-primary" id="confirm-new-file">Create</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Archive Modal -->
+  <div class="modal-backdrop" id="archive-modal">
+    <div class="modal-card">
+      <div class="modal-title">📦 Archive Documentation</div>
+      <div class="modal-desc">
+        This will copy current <code>input/</code> and <code>output/</code> folders to a numbered subfolder in <code>archive/</code>, then clean <code>input/</code> and <code>output/</code> while <strong>preserving reusable assets</strong> (<code>output/assets/</code>).
+      </div>
+      <label style="display: block; font-size: 0.8rem; margin-bottom: 0.4rem; color: var(--text-muted);">
+        Preferred Archive Name:
+      </label>
+      <input type="text" class="modal-input" id="archive-name-input" placeholder="GraphTutorials">
+      <div class="modal-actions">
+        <button class="btn" id="cancel-archive">Cancel</button>
+        <button class="btn btn-success" id="confirm-archive">Confirm & Archive</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast Notification -->
+  <div class="toast" id="toast">
+    <span id="toast-message">Message</span>
+  </div>
+
+  <script>
+    (function () {
+      let currentFile = null;
+      let isDirty = false;
+      let filesList = [];
+      let archivesList = [];
+
+      const editor = document.getElementById('markdown-editor');
+      const previewContent = document.getElementById('preview-content');
+      const currentFilename = document.getElementById('current-filename');
+      const dirtyDot = document.getElementById('dirty-dot');
+      const fileListEl = document.getElementById('file-list');
+      const archiveListEl = document.getElementById('archive-list');
+      const archiveCountEl = document.getElementById('archive-count');
+      const statusBadge = document.getElementById('status-badge');
+      const siteFrame = document.getElementById('site-frame');
+
+      // Toast utility
+      function showToast(msg, type = 'info') {
+        const toast = document.getElementById('toast');
+        const toastMsg = document.getElementById('toast-message');
+        toast.className = `toast show ${type}`;
+        toastMsg.textContent = msg;
+        setTimeout(() => { toast.classList.remove('show'); }, 3000);
+      }
+
+      // 1. Fetch Status & Files
+      async function loadStatus() {
+        try {
+          const res = await fetch('/api/status');
+          const data = await res.json();
+
+          filesList = data.input_files || [];
+          renderFileList();
+
+          loadArchives();
+
+          if (!currentFile && filesList.length > 0) {
+            loadFile(filesList[0]);
+          }
+        } catch (err) {
+          console.error('Failed to load status', err);
+        }
+      }
+
+      function renderFileList() {
+        fileListEl.innerHTML = '';
+        if (filesList.length === 0) {
+          fileListEl.innerHTML = '<li style="padding: 0.75rem; color: var(--text-muted); font-size: 0.8rem;">No files in input/. Click + New to create one.</li>';
+          return;
+        }
+
+        filesList.forEach((file) => {
+          const li = document.createElement('li');
+          li.className = `file-item ${file === currentFile ? 'active' : ''}`;
+          li.innerHTML = `
+            <span class="file-name">📄 ${file}</span>
+            <button class="file-delete-btn" title="Delete file" data-file="${file}">🗑️</button>
+          `;
+
+          li.querySelector('.file-name').addEventListener('click', () => {
+            if (isDirty && !confirm('You have unsaved changes. Discard them?')) return;
+            loadFile(file);
+          });
+
+          li.querySelector('.file-delete-btn').addEventListener('click', async (e) => {
+            e.stopPropagation();
+            if (!confirm(`Are you sure you want to delete ${file}?`)) return;
+            await deleteFile(file);
+          });
+
+          fileListEl.appendChild(li);
+        });
+      }
+
+      // 2. Load File Content
+      async function loadFile(path) {
+        try {
+          const res = await fetch(`/api/file?path=${encodeURIComponent(path)}`);
+          const data = await res.json();
+          currentFile = path;
+          editor.value = data.content;
+          currentFilename.textContent = path;
+          isDirty = false;
+          dirtyDot.classList.remove('visible');
+          renderPreview(data.content);
+          renderFileList();
+        } catch (err) {
+          showToast('Failed to load file', 'error');
+        }
+      }
+
+      // 3. Save File Content
+      async function saveCurrentFile() {
+        if (!currentFile) return;
+        try {
+          const res = await fetch('/api/file', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ path: currentFile, content: editor.value }),
+          });
+          const data = await res.json();
+          if (data.success) {
+            isDirty = false;
+            dirtyDot.classList.remove('visible');
+            showToast(`Saved ${currentFile}`, 'success');
+            renderPreview(editor.value);
+          } else {
+            showToast('Save failed', 'error');
+          }
+        } catch (err) {
+          showToast('Error saving file', 'error');
+        }
+      }
+
+      // 4. Delete File
+      async function deleteFile(path) {
+        try {
+          const res = await fetch(`/api/file?path=${encodeURIComponent(path)}`, { method: 'DELETE' });
+          const data = await res.json();
+          if (data.success) {
+            showToast(`Deleted ${path}`, 'success');
+            if (currentFile === path) {
+              currentFile = null;
+              editor.value = '';
+              currentFilename.textContent = 'Select a document';
+              previewContent.innerHTML = '';
+            }
+            loadStatus();
+          }
+        } catch (err) {
+          showToast('Failed to delete file', 'error');
+        }
+      }
+
+      // 5. Build Documentation
+      async function buildSite() {
+        statusBadge.textContent = 'Building...';
+        statusBadge.style.background = 'rgba(245, 158, 11, 0.2)';
+        statusBadge.style.color = 'var(--warning)';
+
+        try {
+          if (isDirty) await saveCurrentFile();
+          const res = await fetch('/api/build', { method: 'POST' });
+          const data = await res.json();
+          if (data.success) {
+            statusBadge.textContent = 'Ready';
+            statusBadge.style.background = 'rgba(34, 197, 94, 0.2)';
+            statusBadge.style.color = 'var(--success)';
+            showToast('Build completed successfully!', 'success');
+            siteFrame.src = '/output/index.html?t=' + Date.now();
+          } else {
+            statusBadge.textContent = 'Build Failed';
+            showToast('Build error: ' + data.error, 'error');
+          }
+        } catch (err) {
+          statusBadge.textContent = 'Error';
+          showToast('Build failed', 'error');
+        }
+      }
+
+      // 6. Archives Handling
+      async function loadArchives() {
+        try {
+          const res = await fetch('/api/archives');
+          const data = await res.json();
+          archivesList = data.archives || [];
+          archiveCountEl.textContent = archivesList.length;
+
+          archiveListEl.innerHTML = '';
+          if (archivesList.length === 0) {
+            archiveListEl.innerHTML = '<li style="padding: 0.5rem; color: var(--text-muted); font-size: 0.75rem;">No archives created yet.</li>';
+            return;
+          }
+
+          archivesList.forEach((arch) => {
+            const li = document.createElement('li');
+            li.className = 'archive-item';
+            li.innerHTML = `
+              <span title="${arch.folder}">📁 ${arch.folder}</span>
+              <button class="archive-restore-btn" data-folder="${arch.folder}" title="Restore archive to input/">Restore</button>
+            `;
+
+            li.querySelector('.archive-restore-btn').addEventListener('click', async () => {
+              if (!confirm(`Restore archive '${arch.folder}' to active input/? Current un-archived input files will be overwritten.`)) return;
+              await restoreArchive(arch.folder);
+            });
+
+            archiveListEl.appendChild(li);
+          });
+        } catch (err) {
+          console.error('Failed to load archives', err);
+        }
+      }
+
+      async function restoreArchive(folder) {
+        try {
+          const res = await fetch('/api/restore', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ folder }),
+          });
+          const data = await res.json();
+          if (data.success) {
+            showToast(`Restored archive '${folder}' to input/`, 'success');
+            loadStatus();
+          }
+        } catch (err) {
+          showToast('Failed to restore archive', 'error');
+        }
+      }
+
+      async function executeArchive() {
+        const input = document.getElementById('archive-name-input');
+        const name = input.value.trim() || 'NewArchive';
+
+        document.getElementById('archive-modal').classList.remove('open');
+        showToast(`Archiving as '${name}'...`, 'info');
+
+        try {
+          const res = await fetch('/api/archive', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ name }),
+          });
+          const data = await res.json();
+          if (data.success) {
+            showToast(`Successfully archived to ${data.folder}!`, 'success');
+            currentFile = null;
+            editor.value = '';
+            currentFilename.textContent = 'Select a document';
+            previewContent.innerHTML = '';
+            loadStatus();
+          } else {
+            showToast('Archive failed: ' + data.error, 'error');
+          }
+        } catch (err) {
+          showToast('Error executing archive', 'error');
+        }
+      }
+
+      // 7. Markdown Preview Renderer
+      async function renderPreview(md) {
+        try {
+          const res = await fetch('/api/preview', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ markdown: md }),
+          });
+          const data = await res.json();
+          previewContent.innerHTML = data.html || '';
+        } catch (err) {
+          previewContent.innerHTML = '<pre>' + md.replace(/</g, '&lt;') + '</pre>';
+        }
+      }
+
+      // Input changes
+      editor.addEventListener('input', () => {
+        if (!isDirty) {
+          isDirty = true;
+          dirtyDot.classList.add('visible');
+        }
+      });
+
+      // Keyboard shortcuts
+      window.addEventListener('keydown', (e) => {
+        if ((e.ctrlKey || e.metaKey) && e.key === 's') {
+          e.preventDefault();
+          saveCurrentFile();
+        }
+      });
+
+      // View modes (Split, Editor, Preview, Site)
+      document.querySelectorAll('.view-btn').forEach((btn) => {
+        btn.addEventListener('click', () => {
+          document.querySelectorAll('.view-btn').forEach(b => b.classList.remove('active'));
+          btn.classList.add('active');
+
+          const mode = btn.getAttribute('data-view');
+          const editorPane = document.getElementById('editor-pane');
+          const previewPane = document.getElementById('preview-pane');
+          const sitePane = document.getElementById('site-iframe-pane');
+
+          if (mode === 'split') {
+            editorPane.style.display = 'flex';
+            previewPane.style.display = 'block';
+            sitePane.classList.remove('active');
+          } else if (mode === 'editor') {
+            editorPane.style.display = 'flex';
+            previewPane.style.display = 'none';
+            sitePane.classList.remove('active');
+          } else if (mode === 'preview') {
+            editorPane.style.display = 'none';
+            previewPane.style.display = 'block';
+            sitePane.classList.remove('active');
+          } else if (mode === 'site') {
+            editorPane.style.display = 'none';
+            previewPane.style.display = 'none';
+            sitePane.classList.add('active');
+            siteFrame.src = '/output/index.html?t=' + Date.now();
+          }
+        });
+      });
+
+      // Format Bar Buttons
+      document.querySelectorAll('.tool-btn').forEach((btn) => {
+        btn.addEventListener('click', () => {
+          const fmt = btn.getAttribute('data-fmt');
+          const start = editor.selectionStart;
+          const end = editor.selectionEnd;
+          const selected = editor.value.substring(start, end);
+
+          let snippet = '';
+          switch (fmt) {
+            case 'h1': snippet = `# ${selected || 'Heading 1'}\n`; break;
+            case 'h2': snippet = `## ${selected || 'Heading 2'}\n`; break;
+            case 'bold': snippet = `**${selected || 'bold text'}**`; break;
+            case 'italic': snippet = `*${selected || 'italic text'}*`; break;
+            case 'code': snippet = `\`${selected || 'code'}\``; break;
+            case 'quote': snippet = `> ${selected || 'Quote text'}\n`; break;
+            case 'note': snippet = `> [!NOTE]\n> ${selected || 'Note content'}\n`; break;
+            case 'tip': snippet = `> [!TIP]\n> ${selected || 'Tip content'}\n`; break;
+            case 'warning': snippet = `> [!WARNING]\n> ${selected || 'Warning content'}\n`; break;
+            case 'table': snippet = `\n| Column 1 | Column 2 |\n| :--- | :--- |\n| Data A | Data B |\n`; break;
+            case 'task': snippet = `- [ ] ${selected || 'New task'}\n`; break;
+          }
+
+          editor.setRangeText(snippet, start, end, 'end');
+          isDirty = true;
+          dirtyDot.classList.add('visible');
+          editor.focus();
+        });
+      });
+
+      // Header Buttons
+      document.getElementById('save-btn').addEventListener('click', saveCurrentFile);
+      document.getElementById('build-btn').addEventListener('click', buildSite);
+      document.getElementById('refresh-btn').addEventListener('click', () => {
+        loadStatus();
+        if (currentFile) loadFile(currentFile);
+        showToast('Refreshed', 'info');
+      });
+
+      // Theme toggle
+      const themeBtn = document.getElementById('theme-mode-btn');
+      themeBtn.addEventListener('click', () => {
+        const body = document.body;
+        const nextTheme = body.getAttribute('data-theme') === 'light' ? 'dark' : 'light';
+        body.setAttribute('data-theme', nextTheme);
+        localStorage.setItem('mdrender-dashboard-theme', nextTheme);
+      });
+
+      const savedDashboardTheme = localStorage.getItem('mdrender-dashboard-theme') || 'dark';
+      document.body.setAttribute('data-theme', savedDashboardTheme);
+
+      // New File Modal
+      const newFileModal = document.getElementById('new-file-modal');
+      const newFileInput = document.getElementById('new-filename-input');
+      document.getElementById('new-file-btn').addEventListener('click', () => {
+        newFileInput.value = '';
+        newFileModal.classList.add('open');
+        newFileInput.focus();
+      });
+      document.getElementById('cancel-new-file').addEventListener('click', () => {
+        newFileModal.classList.remove('open');
+      });
+      document.getElementById('confirm-new-file').addEventListener('click', async () => {
+        let name = newFileInput.value.trim();
+        if (!name) return;
+        if (!name.endsWith('.md') && !name.endsWith('.markdown')) name += '.md';
+        newFileModal.classList.remove('open');
+
+        const initialContent = `---\ntitle: "${name.replace('.md', '')}"\ndate: "${new Date().toISOString().slice(0, 10)}"\n---\n\n# New Document\n\nStart writing here...\n`;
+        await fetch('/api/file', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ path: name, content: initialContent }),
+        });
+        await loadStatus();
+        loadFile(name);
+        showToast(`Created ${name}`, 'success');
+      });
+
+      // Archive Modal
+      const archiveModal = document.getElementById('archive-modal');
+      const archiveInput = document.getElementById('archive-name-input');
+      document.getElementById('archive-modal-btn').addEventListener('click', () => {
+        archiveInput.value = 'GraphTutorials';
+        archiveModal.classList.add('open');
+        archiveInput.focus();
+      });
+      document.getElementById('cancel-archive').addEventListener('click', () => {
+        archiveModal.classList.remove('open');
+      });
+      document.getElementById('confirm-archive').addEventListener('click', executeArchive);
+
+      // Initialize
+      loadStatus();
+    })();
+  </script>
+</body>
+</html>
+

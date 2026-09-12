@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>The Graph Engineering Manifesto - MDRender Docs</title>
+  <link rel="stylesheet" href="./assets/style.css">
+  <!-- Anti-FOUC theme pre-hydration -->
+  <script>
+    (function() {
+      const theme = localStorage.getItem('mdrender-theme') || 'github';
+      const savedMode = localStorage.getItem('mdrender-mode') || 'auto';
+      const mode = savedMode === 'auto'
+        ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light')
+        : savedMode;
+      document.documentElement.setAttribute('data-theme', theme);
+      document.documentElement.setAttribute('data-mode', mode);
+    })();
+  </script>
+</head>
+<body>
+  <div class="app-container">
+    <header class="top-header">
+      <div class="header-left">
+        <button class="mobile-nav-toggle" type="button" aria-label="Toggle navigation">☰</button>
+        <a class="site-title" href="index.html">
+          <span>📖</span>
+          <span>MDRender Docs</span>
+        </a>
+      </div>
+      <div class="header-right">
+        <select id="theme-select" class="control-select" aria-label="Select Theme">
+          <option value="github">GitHub</option>
+          <option value="dracula">Dracula</option>
+          <option value="nord">Nord</option>
+          <option value="solarized">Solarized</option>
+          <option value="sepia">Sepia</option>
+        </select>
+        <button id="mode-toggle" class="control-btn mode-toggle-btn" type="button" aria-label="Toggle dark/light mode">
+          💻 Auto
+        </button>
+      </div>
+    </header>
+
+    <div class="layout-body">
+      <div class="sidebar-backdrop"></div>
+      <aside class="sidebar">
+        <div class="sidebar-search">
+          <input type="text" class="search-input" placeholder="Search pages..." aria-label="Filter navigation">
+        </div>
+  <div class="nav-section-title">General</div>
+  <ul class="nav-list">
+    <li class="nav-item"><a class="nav-link" href="index.html">Overview</a></li>
+    <li class="nav-item"><a class="nav-link" href="020.html">020</a></li>
+    <li class="nav-item"><a class="nav-link" href="021.html">021</a></li>
+    <li class="nav-item"><a class="nav-link" href="022.html">022</a></li>
+    <li class="nav-item"><a class="nav-link" href="023.html">023</a></li>
+    <li class="nav-item"><a class="nav-link" href="024.html">024</a></li>
+    <li class="nav-item"><a class="nav-link" href="025.html">025</a></li>
+    <li class="nav-item"><a class="nav-link" href="026.html">026</a></li>
+    <li class="nav-item"><a class="nav-link" href="027.html">027</a></li>
+    <li class="nav-item"><a class="nav-link" href="028.html">028</a></li>
+    <li class="nav-item"><a class="nav-link" href="029.html">029</a></li>
+    <li class="nav-item"><a class="nav-link" href="030.html">030</a></li>
+    <li class="nav-item"><a class="nav-link" href="031.html">031</a></li>
+    <li class="nav-item"><a class="nav-link" href="032.html">032</a></li>
+    <li class="nav-item"><a class="nav-link" href="033.html">033</a></li>
+    <li class="nav-item"><a class="nav-link" href="034.html">034</a></li>
+    <li class="nav-item"><a class="nav-link active" href="#">035</a></li>
+    <li class="nav-item"><a class="nav-link" href="036.html">036</a></li>
+    <li class="nav-item"><a class="nav-link" href="037.html">037</a></li>
+    <li class="nav-item"><a class="nav-link" href="038.html">038</a></li>
+    <li class="nav-item"><a class="nav-link" href="039.html">039</a></li>
+    <li class="nav-item"><a class="nav-link" href="040.html">040</a></li>
+  </ul>
+
+      </aside>
+
+      <main class="content-area">
+        <article>
+<h2 id="request">Request<a href="#request" class="header-anchor" aria-label="Link to section">#</a></h2>
+<p>now create the detailed blog for ###  14. Anatomy of Orthograph: The Python Semantic Engine</p>
+<h2 id="response">Response<a href="#response" class="header-anchor" aria-label="Link to section">#</a></h2><h1 id="the-graph-engineering-manifesto">The Graph Engineering Manifesto<a href="#the-graph-engineering-manifesto" class="header-anchor" aria-label="Link to section">#</a></h1><h2 id="part-14-anatomy-of-orthograph-the-python-semantic-engine">Part 14: Anatomy of Orthograph: The Python Semantic Engine<a href="#part-14-anatomy-of-orthograph-the-python-semantic-engine" class="header-anchor" aria-label="Link to section">#</a></h2>
+<p>Throughout the first thirteen parts of this series, we have focused heavily on the <strong>Task Graph</strong> (<code>ortho-task-graph</code>). We explored how the TypeScript orchestrator acts as an unyielding kernel, enforcing the "Separation of Clocks," ensuring atomic filesystem writes, and using monotonic revisions to prevent multi-agent race conditions.</p>
+<p>But perfect orchestration is meaningless if the data the agents are manipulating is corrupt, hallucinated, or contradictory.</p>
+<p>In Graph Engineering, execution logic and memory management are fundamentally different problem domains, requiring different architectures and different languages. Today, we cross the Model Context Protocol (MCP) bridge into the second half of Orthograph OS: <strong>The Knowledge Graph</strong> (<code>ortho-knowledge-graph</code>).</p>
+<p>Written in Python, this semantic engine acts as a rigorous data-science firewall. It guarantees that every piece of knowledge stored by the agents is structurally sound, mathematically fused, and cryptographically provenanced.</p>
+<p>Let’s dissect the four gates of the Python Semantic Engine.</p>
+<hr />
+<h3 id="the-ingestion-pipeline-insert-fact">The Ingestion Pipeline: insert_fact<a href="#the-ingestion-pipeline-insert-fact" class="header-anchor" aria-label="Link to section">#</a></h3>
+<p>The core entry point for any data into Orthograph’s memory is the <code>insert_fact</code> MCP tool.</p>
+<p>When an agent (like the Executor) reads a document and wants to store a relationship—for instance, noting that Patient P-001 reported an adverse event—it invokes <code>insert_fact</code>.</p>
+<div class="code-block-wrapper">
+  <div class="code-block-header">
+    <span class="code-lang">json</span>
+    <button class="copy-btn" type="button" aria-label="Copy code">Copy</button>
+  </div>
+<pre><code class="language-json">// The Agent's MCP Tool Call
+{
+  "tool": "insert_fact",
+  "arguments": {
+    "subject_id": "p-001",
+    "subject_type": "PatientRecord",
+    "relation": "REPORTED_EVENT",
+    "obj_id": "ae-001",
+    "obj_type": "AdverseEvent",
+    "source_doc": "trial_data_v2",
+    "agent_id": "executor-haiku-v4"
+  }
+}
+</code></pre>
+</div>
+<p>In a naive vector database, this JSON payload would simply be embedded and appended to a table. In Orthograph, this payload must survive a gauntlet of four deterministic Python gates.</p>
+<h3 id="gate-1-the-ontology-gate">Gate 1: The Ontology Gate<a href="#gate-1-the-ontology-gate" class="header-anchor" aria-label="Link to section">#</a></h3>
+<p>The very first check ensures the agent isn’t hallucinating relationships that don't make logical sense in our business domain.</p>
+<div class="code-block-wrapper">
+  <div class="code-block-header">
+    <span class="code-lang">python</span>
+    <button class="copy-btn" type="button" aria-label="Copy code">Copy</button>
+  </div>
+<pre><code class="language-python"># packages/ortho-knowledge-graph/src/ortho_knowledge_graph/store/client.py (simplified)
+
+# 1. Ontology Gate
+check = self.schema.check_triplet(subject_type, relation, object_type)
+if not check["ok"]:
+    return {"status": "rejected", "code": "ONTOLOGY_VIOLATION", "reason": check["reason"]}
+</code></pre>
+</div>
+<p>The <code>GraphSchema</code> class holds the defined rules of our reality. We explicitly defined that the <code>REPORTED_EVENT</code> relation requires a domain of <code>PatientRecord</code> and a range of <code>AdverseEvent</code>. If the LLM got confused and tried to assert that a <code>[Doctor] -&gt; (REPORTED_EVENT) -&gt; [AdverseEvent]</code>, this gate intercepts it.</p>
+<p>It returns a typed JSON response (<code>ONTOLOGY_VIOLATION</code>) back over the MCP bridge. The LLM sees the rejection and must correct its extraction logic. The database remains unpolluted.</p>
+<h3 id="gate-2-the-provenance-gate">Gate 2: The Provenance Gate<a href="#gate-2-the-provenance-gate" class="header-anchor" aria-label="Link to section">#</a></h3>
+<p>Even if the relationship is logically valid, we must prove it actually came from the source text.</p>
+<div class="code-block-wrapper">
+  <div class="code-block-header">
+    <span class="code-lang">python</span>
+    <button class="copy-btn" type="button" aria-label="Copy code">Copy</button>
+  </div>
+<pre><code class="language-python"># 2. Provenance Gate
+if not self.provenance.verify_source(prov_doc):
+    return {
+        "status": "rejected",
+        "code": "PROV_O_VIOLATION",
+        "reason": f"Source document '{prov_doc}' is not registered..."
+    }
+</code></pre>
+</div>
+<p>The <code>DocumentRegistry</code> maintains the "Trusted Corpus." If the LLM tries to justify the adverse event by citing a document ID it just invented (e.g., <code>source_doc: "doctor_notes_xyz"</code>), the <code>ProvenanceTracker</code> flags it as a hallucination.</p>
+<p>If the document <em>is</em> valid, the tracker generates an immutable W3C PROV-O lineage tag. It computes a cryptographic SHA-256 hash (<code>extraction_hash</code>) that permanently binds the agent's ID, the document ID, the timestamp, and the specific chunk index together.</p>
+<h3 id="gate-3-the-identity-gate-entity-fusion">Gate 3: The Identity Gate (Entity Fusion)<a href="#gate-3-the-identity-gate-entity-fusion" class="header-anchor" aria-label="Link to section">#</a></h3>
+<p>LLMs are notoriously inconsistent with nomenclature. In one document, it might extract the entity <code>"Southeast University"</code>. In another document, it might extract <code>"SEU"</code>.</p>
+<p>If we store both as separate nodes, multi-hop graph queries (like "Find all patients enrolled at Southeast University") will silently fail, because half the patients are linked to the "SEU" node.</p>
+<p>The Identity Gate solves this deterministically.</p>
+<div class="code-block-wrapper">
+  <div class="code-block-header">
+    <span class="code-lang">python</span>
+    <button class="copy-btn" type="button" aria-label="Copy code">Copy</button>
+  </div>
+<pre><code class="language-python"># 3. Identity Gate
+subject_id = self._canonical(subject, agent_id)
+obj_id = self._canonical(obj, agent_id)
+</code></pre>
+</div>
+<p>The <code>EntityRegistry</code> intercepts the incoming entity labels. If it detects an exact alias match, it automatically performs a <strong>Fusion Event</strong>. It merges the incoming node into the existing canonical node, re-routes all incoming and outgoing edges, and creates an audited merge log entry.</p>
+<p>To the rest of the graph, "SEU" and "Southeast University" are now mathematically identical.</p>
+<h3 id="gate-4-the-fusion-gate-temporal-conflicts">Gate 4: The Fusion Gate (Temporal Conflicts)<a href="#gate-4-the-fusion-gate-temporal-conflicts" class="header-anchor" aria-label="Link to section">#</a></h3>
+<p>The final gate handles the hardest problem in semantic memory: Contradiction.</p>
+<p>In our schema, we defined the <code>ASSIGNED_ARM</code> relationship as <code>functional=True</code>. A patient can only be assigned to <em>one</em> trial arm at a time.</p>
+<p>If the agent tries to ingest a fact stating Patient P-001 is in "Trial Arm B", but the graph already shows P-001 in "Trial Arm A", the <code>SemanticConflictQueue</code> activates.</p>
+<div class="code-block-wrapper">
+  <div class="code-block-header">
+    <span class="code-lang">python</span>
+    <button class="copy-btn" type="button" aria-label="Copy code">Copy</button>
+  </div>
+<pre><code class="language-python"># 4. Fusion Gate
+conflict = self.fusion.check_functional_violation(new_triplet, existing_triplets, is_functional)
+if conflict:
+    self.store.quarantine_conflict(self.fusion.quarantine[-1])
+    return {
+        "status": "quarantined",
+        "code": "FUSION_CONFLICT",
+        "reason": "Fact conflicts with an existing functional relation..."
+    }
+</code></pre>
+</div>
+<p>Instead of crashing or silently overwriting the old data, the engine quarantines the new fact. It returns a <code>quarantined</code> status to the Executor agent.</p>
+<p>The Executor logs the anomaly in its <code>ledger.md</code> (Register-then-Defer) and moves on. Later, the Supervisor agent (which possesses the privileged <code>resolve_conflict</code> MCP tool capability) will query the quarantine queue, evaluate the conflicting evidence, and definitively adjudicate whether Trial Arm A or Trial Arm B is the correct reality.</p>
+<h3 id="conclusion">Conclusion<a href="#conclusion" class="header-anchor" aria-label="Link to section">#</a></h3>
+<p>The Python Semantic Engine is not a database wrapper; it is an active, aggressive firewall. By forcing every single fact through Ontology, Provenance, Identity, and Fusion gates, Orthograph guarantees that its memory is enterprise-grade, legally auditable, and structurally perfect.</p>
+<p>But where does this perfect data actually live? In our development environment, it lives in a simple JSON file. For production, we need something much more powerful.</p>
+<p>In <strong>Part 15: RDF 1.2 Reifiers and the Oxigraph Backend</strong>, we will explore the final piece of the storage puzzle. We will see how Orthograph leverages the bleeding-edge RDF 1.2 specification to store massive graphs locally without the combinatorial bloat that plagued early semantic web technologies.</p>
+
+        </article>
+        <footer class="page-footer">
+          <span>Generated with <strong>MDRender</strong></span>
+          <a href="#top" class="back-to-top">↑ Back to top</a>
+        </footer>
+      </main>
+
+<aside class="toc-sidebar">
+  <div class="toc-title">On this page</div>
+  <ul class="toc-list">
+    <li class="toc-item depth-2"><a class="toc-link" href="#request">Request</a></li>
+    <li class="toc-item depth-2"><a class="toc-link" href="#response">Response</a></li>
+    <li class="toc-item depth-2"><a class="toc-link" href="#part-14-anatomy-of-orthograph-the-python-semantic-engine">Part 14: Anatomy of Orthograph: The Python Semantic Engine</a></li>
+    <li class="toc-item depth-3"><a class="toc-link" href="#the-ingestion-pipeline-insert-fact">The Ingestion Pipeline: insert_fact</a></li>
+    <li class="toc-item depth-3"><a class="toc-link" href="#gate-1-the-ontology-gate">Gate 1: The Ontology Gate</a></li>
+    <li class="toc-item depth-3"><a class="toc-link" href="#gate-2-the-provenance-gate">Gate 2: The Provenance Gate</a></li>
+    <li class="toc-item depth-3"><a class="toc-link" href="#gate-3-the-identity-gate-entity-fusion">Gate 3: The Identity Gate (Entity Fusion)</a></li>
+    <li class="toc-item depth-3"><a class="toc-link" href="#gate-4-the-fusion-gate-temporal-conflicts">Gate 4: The Fusion Gate (Temporal Conflicts)</a></li>
+    <li class="toc-item depth-3"><a class="toc-link" href="#conclusion">Conclusion</a></li>
+  </ul>
+</aside>
+
+    </div>
+  </div>
+
+  <script src="./assets/theme.js"></script>
+</body>
+</html>

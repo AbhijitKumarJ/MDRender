@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>The Graph Engineering Manifesto - MDRender Docs</title>
+  <link rel="stylesheet" href="./assets/style.css">
+  <!-- Anti-FOUC theme pre-hydration -->
+  <script>
+    (function() {
+      const theme = localStorage.getItem('mdrender-theme') || 'github';
+      const savedMode = localStorage.getItem('mdrender-mode') || 'auto';
+      const mode = savedMode === 'auto'
+        ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light')
+        : savedMode;
+      document.documentElement.setAttribute('data-theme', theme);
+      document.documentElement.setAttribute('data-mode', mode);
+    })();
+  </script>
+</head>
+<body>
+  <div class="app-container">
+    <header class="top-header">
+      <div class="header-left">
+        <button class="mobile-nav-toggle" type="button" aria-label="Toggle navigation">☰</button>
+        <a class="site-title" href="index.html">
+          <span>📖</span>
+          <span>MDRender Docs</span>
+        </a>
+      </div>
+      <div class="header-right">
+        <select id="theme-select" class="control-select" aria-label="Select Theme">
+          <option value="github">GitHub</option>
+          <option value="dracula">Dracula</option>
+          <option value="nord">Nord</option>
+          <option value="solarized">Solarized</option>
+          <option value="sepia">Sepia</option>
+        </select>
+        <button id="mode-toggle" class="control-btn mode-toggle-btn" type="button" aria-label="Toggle dark/light mode">
+          💻 Auto
+        </button>
+      </div>
+    </header>
+
+    <div class="layout-body">
+      <div class="sidebar-backdrop"></div>
+      <aside class="sidebar">
+        <div class="sidebar-search">
+          <input type="text" class="search-input" placeholder="Search pages..." aria-label="Filter navigation">
+        </div>
+  <div class="nav-section-title">General</div>
+  <ul class="nav-list">
+    <li class="nav-item"><a class="nav-link" href="index.html">Overview</a></li>
+    <li class="nav-item"><a class="nav-link" href="020.html">020</a></li>
+    <li class="nav-item"><a class="nav-link" href="021.html">021</a></li>
+    <li class="nav-item"><a class="nav-link" href="022.html">022</a></li>
+    <li class="nav-item"><a class="nav-link" href="023.html">023</a></li>
+    <li class="nav-item"><a class="nav-link" href="024.html">024</a></li>
+    <li class="nav-item"><a class="nav-link" href="025.html">025</a></li>
+    <li class="nav-item"><a class="nav-link active" href="#">026</a></li>
+    <li class="nav-item"><a class="nav-link" href="027.html">027</a></li>
+    <li class="nav-item"><a class="nav-link" href="028.html">028</a></li>
+    <li class="nav-item"><a class="nav-link" href="029.html">029</a></li>
+    <li class="nav-item"><a class="nav-link" href="030.html">030</a></li>
+    <li class="nav-item"><a class="nav-link" href="031.html">031</a></li>
+    <li class="nav-item"><a class="nav-link" href="032.html">032</a></li>
+    <li class="nav-item"><a class="nav-link" href="033.html">033</a></li>
+    <li class="nav-item"><a class="nav-link" href="034.html">034</a></li>
+    <li class="nav-item"><a class="nav-link" href="035.html">035</a></li>
+    <li class="nav-item"><a class="nav-link" href="036.html">036</a></li>
+    <li class="nav-item"><a class="nav-link" href="037.html">037</a></li>
+    <li class="nav-item"><a class="nav-link" href="038.html">038</a></li>
+    <li class="nav-item"><a class="nav-link" href="039.html">039</a></li>
+    <li class="nav-item"><a class="nav-link" href="040.html">040</a></li>
+  </ul>
+
+      </aside>
+
+      <main class="content-area">
+        <article>
+<h2 id="request">Request<a href="#request" class="header-anchor" aria-label="Link to section">#</a></h2>
+<p>now create the detailed blog for ###  5. Blocked ≠ Parked: Continuous Execution in Agentic Workflows</p>
+<h2 id="response">Response<a href="#response" class="header-anchor" aria-label="Link to section">#</a></h2><h1 id="the-graph-engineering-manifesto">The Graph Engineering Manifesto<a href="#the-graph-engineering-manifesto" class="header-anchor" aria-label="Link to section">#</a></h1><h2 id="part-5-blocked-parked-continuous-execution-in-agentic-workflows">Part 5: Blocked ≠ Parked: Continuous Execution in Agentic Workflows<a href="#part-5-blocked-parked-continuous-execution-in-agentic-workflows" class="header-anchor" aria-label="Link to section">#</a></h2>
+<p>In [Part 4], we explored how agents communicate through the <strong>Durable Edge</strong>—using tightly governed Markdown files (<code>ledger.md</code>, <code>directives.md</code>) to maintain state without bloated chat histories.</p>
+<p>This file-based communication, combined with the <strong>Separation of Clocks</strong> (independent timers for the Executor and Supervisor), makes our system highly resilient. But it also introduces a massive operational challenge: <strong>Latency.</strong></p>
+<p>If the Executor finishes a major milestone and marks it <code>pending-audit</code>, it might have to wait 25 minutes for the Supervisor's slower clock to tick. If the Executor encounters a destructive action (like dropping a production database table) and marks it <code>pending-owner-review</code>, it might wait <em>days</em> for a human to wake up and approve it.</p>
+<p>In a naive framework, the Executor just spins. It polls the ledger, realizes it is blocked, and goes back to sleep, wasting compute or doing absolutely nothing while waiting for permission to proceed.</p>
+<p>In Orthograph OS, we enforce a strict operational law: <strong>Blocked ≠ Parked.</strong></p>
+<p>When the critical path is blocked, the agent must continue to generate value. Here is how we implement continuous execution in asynchronous agentic workflows.</p>
+<hr />
+<h3 id="the-pathology-of-side-fixing">The Pathology of &quot;Side-Fixing&quot;<a href="#the-pathology-of-side-fixing" class="header-anchor" aria-label="Link to section">#</a></h3>
+<p>To understand how to keep an agent moving, we must first look at what <em>not</em> to do.</p>
+<p>When a human developer is working on a feature and spots an unrelated bug, they often fix it "while they are in there." When an LLM does this, it is disastrous.</p>
+<p>If an agent is tasked with migrating a database, and notices a typo in a CSS file, and decides to fix the CSS file, it pollutes the current Git diff. When the Supervisor wakes up to audit the "Database Migration," it sees a mess of unrelated CSS changes. The audit fails, the task is rejected, and the migration is delayed.</p>
+<p>We solve this with a rigid rule: <strong>Register-then-Defer.</strong></p>
+<p>If the Executor spots a bug, an anomaly, or missing documentation mid-round, it is mathematically forbidden from fixing it. Instead, it must use the MCP tool <code>ledger.register_gap</code> to log the anomaly in the <code>ledger.md</code>'s <strong>Debt &amp; Gap Register</strong>.</p>
+<div class="code-block-wrapper">
+  <div class="code-block-header">
+    <span class="code-lang">markdown</span>
+    <button class="copy-btn" type="button" aria-label="Copy code">Copy</button>
+  </div>
+<pre><code class="language-markdown">## Debt &amp; Gap Register (Register-then-defer)
+| ID      | Priority | Description                                       | Status |
+| ------- | -------- | ------------------------------------------------- | ------ |
+| GAP-001 | P2       | Found duplicate patient IDs across sites A and B. | open   |
+| GAP-002 | P3       | Missing docstrings in authentication.py           | open   |
+</code></pre>
+</div>
+<p>The Executor logs the gap and finishes its current, narrowly-defined slice of work.</p>
+<h3 id="the-gate-wait-backlog-the-blocked-work-lane">The Gate-Wait Backlog (The Blocked-Work Lane)<a href="#the-gate-wait-backlog-the-blocked-work-lane" class="header-anchor" aria-label="Link to section">#</a></h3>
+<p>The Debt &amp; Gap Register isn't just a burn-down list for the end of the project. It is the fuel that keeps the agent running during high-latency blocks.</p>
+<p>Imagine Milestone 1 (Database Migration) is complete and marked <code>pending-audit</code>. The Executor is now technically blocked from advancing to Milestone 2.</p>
+<p>Instead of going to sleep, the Orthograph kernel kicks the Executor into the <strong>Blocked-Work Lane</strong>. The Executor looks at the Debt &amp; Gap Register and asks: <em>"What can I do right now that won't ruin the Supervisor's audit?"</em></p>
+<h4 id="the-disjoint-write-surface-algorithm">The Disjoint Write-Surface Algorithm<a href="#the-disjoint-write-surface-algorithm" class="header-anchor" aria-label="Link to section">#</a></h4>
+<p>It cannot just pick any gap. If the Executor decides to fix <code>GAP-001</code> (Duplicate Patient IDs), it might modify the exact same database schemas that the Supervisor is currently trying to audit for Milestone 1.</p>
+<p>To prevent this collision, Orthograph OS requires every task to declare its <strong>Write Surface</strong>.</p>
+<div class="code-block-wrapper">
+  <div class="code-block-header">
+    <span class="code-lang">markdown</span>
+    <button class="copy-btn" type="button" aria-label="Copy code">Copy</button>
+  </div>
+<pre><code class="language-markdown">| ID       | Description               | Status        | Write Surface   |
+| -------- | ------------------------- | ------------- | --------------- |
+| ITEM-001 | Database Migration        | pending-audit | db-schemas      |
+</code></pre>
+</div>
+<p>Before picking up a task from the Gap Register, the kernel calculates the mathematical intersection of the proposed task's write-surface against the write-surfaces of all <code>pending-audit</code> or <code>blocked</code> tasks.</p>
+<div class="code-block-wrapper">
+  <div class="code-block-header">
+    <span class="code-lang">typescript</span>
+    <button class="copy-btn" type="button" aria-label="Copy code">Copy</button>
+  </div>
+<pre><code class="language-typescript">// packages/ortho-task-graph/src/ledger.ts
+public getNextUnblockedItem(): LedgerItem | null {
+    // 1. Find all surfaces currently locked by audits or human blocks
+    const blockedSurfaces = new Set(
+        this.items.filter(i =&gt; i.status === "blocked" || i.status === "pending-audit")
+                  .flatMap(i =&gt; i.write_surface)
+    );
+
+    // 2. Find the highest priority gap whose write-surface is completely disjoint
+    return this.gaps.find(gap =&gt; 
+        gap.status === "open" &amp;&amp; 
+        !gap.write_surface.some(surface =&gt; blockedSurfaces.has(surface))
+    ) || null;
+}
+</code></pre>
+</div>
+<p>Because <code>GAP-002</code> (Missing docstrings in <code>authentication.py</code>) has a write-surface of <code>auth-module</code>, and the blocked milestone has a write-surface of <code>db-schemas</code>, the intersection is zero.</p>
+<p>The Executor seamlessly picks up <code>GAP-002</code>, implements the docstrings, verifies the linter passes, and marks it closed—all while the Supervisor takes its time auditing the database migration.</p>
+<h3 id="owner-escalations-abc-cards-not-homework">Owner Escalations: A/B/C Cards, Not Homework<a href="#owner-escalations-abc-cards-not-homework" class="header-anchor" aria-label="Link to section">#</a></h3>
+<p>Eventually, an agent will hit a task that a machine simply cannot authorize. For example: dropping a legacy database table, altering a production API contract, or lowering an accuracy threshold to pass a test.</p>
+<p>Orthograph designates these as <strong>Red Lines</strong>. When the Executor hits a Red Line, it marks the task <code>pending-owner-review</code> and moves to the Blocked-Work Lane.</p>
+<p>But <em>how</em> it escalates to the human owner is critical.</p>
+<p>In 2024, agents would dump a massive technical log into the chat UI: <em>"I encountered an error trying to drop the table because of a foreign key constraint on the users table. Here is the stack trace..."</em></p>
+<p>The human owner, who hasn't looked at the code in three days, is suddenly forced to reconstruct the agent's entire context, debug the SQL, and write a detailed prompt to fix it. This is exhausting. It turns the human into the agent's assistant.</p>
+<p>In Graph Engineering, escalations are treated as an API contract. The agent is forced to format its block as an <strong>Owner Choice Card</strong>. It must investigate the issue, formulate the tradeoffs, and present the human with a maximum of three mutually exclusive choices.</p>
+<div class="code-block-wrapper">
+  <div class="code-block-header">
+    <span class="code-lang">text</span>
+    <button class="copy-btn" type="button" aria-label="Copy code">Copy</button>
+  </div>
+<pre><code class="language-text">Decision needed: The old photo-data column still exists. We have verified all 4,812 photos are successfully migrated to AWS S3. Should we drop the legacy column?
+Why now: M3 cannot finish while both storage copies remain active.
+Recommendation: A — Drop the column now (safest path forward, data is verified).
+A (Recommended) — Drop it using a reversible migration script.
+B — Keep the column for one release cycle as a hot-backup, drop later.
+Reply with: A / B
+</code></pre>
+</div>
+<p>The owner does not need to read code. They read the card, reply <code>A</code>, and the agent translates that intent into the necessary technical execution on its next tick.</p>
+<h3 id="conclusion">Conclusion<a href="#conclusion" class="header-anchor" aria-label="Link to section">#</a></h3>
+<p>By enforcing <strong>Register-then-Defer</strong>, calculating <strong>Disjoint Write-Surfaces</strong>, and utilizing <strong>A/B/C Choice Cards</strong>, Orthograph transforms blocking events from system-halting failures into smooth, asynchronous lane-changes. The agent is always adding value, and the human is never burdened with context reconstruction.</p>
+<p>We have now conquered the execution half of Graph Engineering (The Task Graph). Our agents run safely, efficiently, and endlessly.</p>
+<p>But an agent is only as good as the facts it bases its decisions on. In <strong>Part 6: Why Naive RAG is a Liability in Regulated Enterprises</strong>, we cross the bridge into the second half of our architecture: <strong>The Knowledge Graph</strong>. We will explore why relying on vector-similarity databases is a recipe for legal and operational disaster, and how we must fundamentally rethink how AI agents store memory.</p>
+
+        </article>
+        <footer class="page-footer">
+          <span>Generated with <strong>MDRender</strong></span>
+          <a href="#top" class="back-to-top">↑ Back to top</a>
+        </footer>
+      </main>
+
+<aside class="toc-sidebar">
+  <div class="toc-title">On this page</div>
+  <ul class="toc-list">
+    <li class="toc-item depth-2"><a class="toc-link" href="#request">Request</a></li>
+    <li class="toc-item depth-2"><a class="toc-link" href="#response">Response</a></li>
+    <li class="toc-item depth-2"><a class="toc-link" href="#part-5-blocked-parked-continuous-execution-in-agentic-workflows">Part 5: Blocked ≠ Parked: Continuous Execution in Agentic Workflows</a></li>
+    <li class="toc-item depth-3"><a class="toc-link" href="#the-pathology-of-side-fixing">The Pathology of &quot;Side-Fixing&quot;</a></li>
+    <li class="toc-item depth-3"><a class="toc-link" href="#the-gate-wait-backlog-the-blocked-work-lane">The Gate-Wait Backlog (The Blocked-Work Lane)</a></li>
+    <li class="toc-item depth-4"><a class="toc-link" href="#the-disjoint-write-surface-algorithm">The Disjoint Write-Surface Algorithm</a></li>
+    <li class="toc-item depth-3"><a class="toc-link" href="#owner-escalations-abc-cards-not-homework">Owner Escalations: A/B/C Cards, Not Homework</a></li>
+    <li class="toc-item depth-3"><a class="toc-link" href="#conclusion">Conclusion</a></li>
+  </ul>
+</aside>
+
+    </div>
+  </div>
+
+  <script src="./assets/theme.js"></script>
+</body>
+</html>
